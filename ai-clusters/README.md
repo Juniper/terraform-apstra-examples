@@ -131,6 +131,6 @@ Apply complete! Resources: 21 added, 0 changed, 0 destroyed.
 <img width="1417" alt="image" src="https://github.com/rajagopalans/apstra-tf-ai/assets/2322011/a96c615f-71d9-42f8-bc50-2bd530a38edd">
 
 ### Sample Logical Device
-<img width="1417" alt="image" src="https://github.com/rajagopalans/apstra-tf-ai/assets/2322011/d7e28652-d03b-4dbd-9aec-81cb9227bd4f">
+<img width="1417" alt="image" src="https://github.com/Juniper/terraform-apstra-examples/blob/master/ai-clusters/images/Logical%20Devices.png">
 
 
