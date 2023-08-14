@@ -125,12 +125,12 @@ Apply complete! Resources: 21 added, 0 changed, 0 destroyed.
 ## Login and Check in Apstra
 
 ### Sample Template
-<img width="1410" alt="image" src="https://github.com/rajagopalans/apstra-tf-ai/assets/2322011/853f6eda-61c5-4298-ae1d-220d66d5a20a">
+<img width="1625" alt="Screen Shot 2023-08-14 at 7 11 23 PM" src="https://github.com/Juniper/terraform-apstra-examples/assets/2322011/f182a389-3ad9-4319-b05e-74d1479b3733">
 
 ### Sample Rack Type
-<img width="1417" alt="image" src="https://github.com/rajagopalans/apstra-tf-ai/assets/2322011/a96c615f-71d9-42f8-bc50-2bd530a38edd">
+<img width="1609" alt="Screen Shot 2023-08-14 at 7 09 44 PM" src="https://github.com/Juniper/terraform-apstra-examples/assets/2322011/3727614a-b196-4ce0-9d48-44a9d1770ac4">
 
 ### Sample Logical Device
-<img width="1417" alt="image" src="https://github.com/Juniper/terraform-apstra-examples/blob/master/ai-clusters/images/Logical%20Devices.png">
+<img width="1616" alt="Screen Shot 2023-08-14 at 7 07 43 PM" src="https://github.com/Juniper/terraform-apstra-examples/assets/2322011/ce563799-0c7d-4a99-8669-d5dcf0b4c77c">
 
 
