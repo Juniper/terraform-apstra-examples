@@ -12,3 +12,5 @@ Each directory in this project tracks a different project that uses the terrafor
 ## Projects
 ### ai-clusters 
    This set of terraform configs help perform AI training in a data center with an Apstra-managed network fabric deploying logical devices, racks and templates.
+### dc_inform_2023q3
+   A set of terraform configs and a slide deck about gitops workflows presented by @chrismarget-j in August of 2023.
