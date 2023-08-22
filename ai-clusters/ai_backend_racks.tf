@@ -1,3 +1,9 @@
+#
+# AI Compute "Backend" rack designs rail-optimzed for NVIDIA A100/H100 GPU
+# DGX and HGX-based servers of 8 GPUs and 8 ports each with GPUDirect RDMA
+# RoCE fabrics will operate at 200GE access for A100s and 400GE for H100s
+#
+
 locals {
   leaf_definition_16x400_16x200 = {
     logical_device_id   = apstra_logical_device.AI-Leaf_16x400_16x200.id
@@ -196,7 +202,7 @@ resource "apstra_rack_type" "AI_32xA100" {
 }
 
 resource "apstra_rack_type" "AI_32xA100_2_spine_uplinks" {
-  name                       = "AI 32xA100 2sp"
+  name                       = "AI 32xA100-2"
   description = "AI Rail-optimized A100 Rack Group of 32 Servers (2 spine uplinks per leaf)"
   fabric_connectivity_design = "l3clos"
   leaf_switches = {

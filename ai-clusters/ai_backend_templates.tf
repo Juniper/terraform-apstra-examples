@@ -1,3 +1,7 @@
+#
+# AI Compute "Backend" fabric designs for Rail-optimzed racks of various sizes
+#
+
 resource "apstra_template_rack_based" "AI_Cluster_64_DGX-A100" {
   name                     = "AI Cluster 64 DGX-A100 (512 GPUs)"
   asn_allocation_scheme    = "unique"
