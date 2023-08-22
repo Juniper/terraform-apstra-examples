@@ -74,6 +74,30 @@ resource "apstra_logical_device" "AI-Leaf_16x400_32x200" {
   ]
 }
 
+# Examples of the QFX5130-32CD where we would have 32 access ports and only
+# 16 fabric ports. The access ports are for example 4x100GE breakout to 400GE
+resource "apstra_logical_device" "AI-Leaf_16x400_32x100" {
+  name = "AI-Leaf 16x400+32x100"
+  panels = [
+    {
+      rows = 2
+      columns = 24
+      port_groups = [
+        {
+          port_count = 16
+          port_speed = "400G"
+          port_roles = ["superspine", "spine", "leaf", "peer", "access", "generic", "unused"]
+        },
+        {
+          port_count = 32
+          port_speed = "100G"
+          port_roles = ["superspine", "spine", "leaf", "peer", "access", "generic", "unused"]
+        },
+      ]
+    }
+  ]
+}
+
 # Example of the Juniper QFX5230-64C with 32 access and 32 fabric 400GE ports
 resource "apstra_logical_device" "AI-Leaf_32_32x400" {
   name = "AI-Leaf 32+32x400"
