@@ -9,10 +9,13 @@ Please follow the steps in the README in the root directory.
 # Confirm in Apstra
 
 ### Sample Template
-<img width="1625" alt="Screen Shot 2023-08-14 at 7 11 23 PM" src="https://github.com/Juniper/terraform-apstra-examples/assets/2322011/f182a389-3ad9-4319-b05e-74d1479b3733">
+<img width="1625" src="https://github.com/Juniper/terraform-apstra-examples/assets/2322011/f182a389-3ad9-4319-b05e-74d1479b3733">
 
 ### Sample Rack Type
-<img width="1609" alt="Screen Shot 2023-08-14 at 7 09 44 PM" src="https://github.com/Juniper/terraform-apstra-examples/assets/2322011/3727614a-b196-4ce0-9d48-44a9d1770ac4">
+<img width="1609" src="https://github.com/Juniper/terraform-apstra-examples/assets/2322011/3727614a-b196-4ce0-9d48-44a9d1770ac4">
 
 ### Sample Logical Device
-<img width="1616" alt="Screen Shot 2023-08-14 at 7 07 43 PM" src="https://github.com/Juniper/terraform-apstra-examples/assets/2322011/ce563799-0c7d-4a99-8669-d5dcf0b4c77c">
+<img width="1616" src="https://github.com/Juniper/terraform-apstra-examples/assets/2322011/ce563799-0c7d-4a99-8669-d5dcf0b4c77c">
+
+### All Templates Examples
+<img width="984" src="https://github.com/Juniper/terraform-apstra-examples/assets/5421664/b015f748-e126-4d90-931e-741122c9eefb">
