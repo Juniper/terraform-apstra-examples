@@ -1,11 +1,11 @@
 
 locals {
   switches = {
-    spine1                  = "525400D9791C"	 // <ip_prefix>.11
-    spine2                  = "525400283F03" // <ip_prefix>.12
-    apstra_esi_001_leaf1    = "5254006E9846" // <ip_prefix>.13
-    apstra_esi_001_leaf2    = "5254009C7BA5" // <ip_prefix>.15
-    apstra_single_001_leaf1 = "525400FAFAD4" // <ip_prefix>.14
+    spine1                  = ""	 // <ip_prefix>.11
+    spine2                  = "" // <ip_prefix>.12
+    apstra_esi_001_leaf1    = "" // <ip_prefix>.13
+    apstra_esi_001_leaf2    = "" // <ip_prefix>.15
+    apstra_single_001_leaf1 = "" // <ip_prefix>.14
   }
 }
 
