@@ -8,4 +8,10 @@ They deploy the components required for a blueprint and then the blueprint itsel
 - The local variable "switches" in the blueprint.tf file needs to be set up correctly.
 <img width="594" alt="image" src="https://github.com/Juniper/terraform-apstra-examples/assets/2322011/a292a395-895f-4033-9666-5e096825437b">
 
-- These values need to be filled in as outlined [here](https://cloudlabs.apstra.com/labguide/Cloudlabs/4.1.2/lab-terraform/labTF-9-blueprints.html)
+
+- These values need to be filled in from the managed devices page in Apstra
+
+![image](https://github.com/Juniper/terraform-apstra-examples/assets/2322011/53d1ed98-7f49-422a-8bfd-cfb211a839c5)
+
+
+  as outlined [here](https://cloudlabs.apstra.com/labguide/Cloudlabs/4.1.2/lab-terraform/labTF-9-blueprints.html)
