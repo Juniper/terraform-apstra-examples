@@ -60,13 +60,80 @@ Note the API token.
 
 ## Setting up Github
 
-### Create The Repo
+### Create An Empty Repo
 
-<img width="1759" alt="CloneRepo" src="https://github.com/Juniper-SE/git-apstra-done/assets/2322011/353f7bfc-d313-4684-a99f-8f7d701ab5c6">
+<img width="1561" alt="Create Empty Repo" src="https://github.com/Juniper/terraform-apstra-examples/assets/2322011/4ccdbcc4-cd8e-434b-838c-4ed4d127942f">
 
 The repo can be private or public
 
-<img width="1762" alt="CloneRepo2" src="https://github.com/Juniper-SE/git-apstra-done/assets/2322011/aa1a4722-399e-49e0-93ff-74973722aaf5">
+### Update the repo with code
+```
+
+ projects % mkdir tmp
+ projects % cd tmp 
+ tmp % git clone git@github.com:Juniper/terraform-apstra-examples
+Cloning into 'terraform-apstra-examples'...
+remote: Enumerating objects: 139, done.
+remote: Counting objects: 100% (139/139), done.
+remote: Compressing objects: 100% (116/116), done.
+remote: Total 139 (delta 55), reused 81 (delta 21), pack-reused 0
+Receiving objects: 100% (139/139), 4.04 MiB | 2.78 MiB/s, done.
+Resolving deltas: 100% (55/55), done.
+ tmp % git clone git@github.com:rajagopalans/git-apstra-demo     
+Cloning into 'git-apstra-demo'...
+warning: You appear to have cloned an empty repository.
+ tmp % cd git-apstra-demo 
+ git-apstra-demo % cp -R ../terraform-apstra-examples/github_integration/* ./
+ git-apstra-demo % cp -R ../terraform-apstra-examples/github_integration/.github ./ 
+ git-apstra-demo % ls
+README.md	provider.tf	simple.tf
+ git-apstra-demo % ls -al
+total 32
+drwxr-xr-x   7 rsubrahmania  staff   224 Sep  5 10:31 .
+drwxr-xr-x   4 rsubrahmania  staff   128 Sep  5 10:29 ..
+drwxr-xr-x  10 rsubrahmania  staff   320 Sep  5 10:28 .git
+drwxr-xr-x   3 rsubrahmania  staff    96 Sep  5 10:31 .github
+-rw-r--r--   1 rsubrahmania  staff  5726 Sep  5 10:31 README.md
+-rw-r--r--   1 rsubrahmania  staff   226 Sep  5 10:31 provider.tf
+-rw-r--r--   1 rsubrahmania  staff   968 Sep  5 10:31 simple.tf
+ git-apstra-demo % git commit -am "add the code to do the github integration"
+On branch master
+
+Initial commit
+
+Untracked files:
+	.github/
+	README.md
+	provider.tf
+	simple.tf
+
+nothing added to commit but untracked files present
+ git-apstra-demo % git add *
+ git-apstra-demo % git commit -am "add the code to do the github integration"
+[master (root-commit) 2f540a7] add the code to do the github integration
+ 3 files changed, 185 insertions(+)
+ create mode 100644 README.md
+ create mode 100644 provider.tf
+ create mode 100644 simple.tf
+ git-apstra-demo % git add .github 
+ git-apstra-demo % git commit -am "add the .github folder"                   
+[master 16d6fb8] add the .github folder
+ 2 files changed, 124 insertions(+)
+ create mode 100644 .github/workflows/terraform-apply.yml
+ create mode 100644 .github/workflows/terraform-plan.yml
+ git-apstra-demo % git push
+Counting objects: 11, done.
+Delta compression using up to 12 threads.
+Compressing objects: 100% (10/10), done.
+Writing objects: 100% (11/11), 4.85 KiB | 1.62 MiB/s, done.
+Total 11 (delta 1), reused 0 (delta 0)
+remote: Resolving deltas: 100% (1/1), done.
+To github.com:rajagopalans/git-apstra-demo
+ * [new branch]      master -> master
+ git-apstra-demo %
+```
+### Confirm that the code got committed into the repo
+<img width="1788" alt="Code is in the repo." src="https://github.com/Juniper/terraform-apstra-examples/assets/2322011/96a8761c-b477-4012-9c01-b38c036e3540">
 
 ### Set up the variables for the github Repo
 
