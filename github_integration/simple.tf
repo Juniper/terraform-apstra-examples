@@ -1,16 +1,3 @@
-terraform {
-  required_providers {
-    apstra = {
-      source = "Juniper/apstra"
-    }
-  }
-}
-
-provider "apstra" {
-    tls_validation_disabled  = true
-    blueprint_mutex_disabled = true
-  }
-
 data "apstra_property_sets" "all" {}
 
 # Loop over Property Set IDs, creating an instance of `apstra_property_set` for each.
