@@ -10,6 +10,9 @@ A set of terraform configs and a slide deck about gitops workflows presented by 
 ### terraform-apstra-lab
 A set of terraform configs that track the terraform lab [here](https://cloudlabs.apstra.com/labguide/Cloudlabs/4.1.2/lab-terraform/labTF-1-intro.html)
 These were used in this [podcast](https://youtu.be/oD3-8CPO9MA) by @chrismarget-j and @rajagopalans
+### github_integration
+Code with a simple terraform config that shows how to integrate github, terraform cloud and apstra seamlessly.
+Please follow the steps in the README in the directory.
 
 # Prerequisites
 * The user needs to have access to an Apstra environment.
@@ -20,7 +23,7 @@ These were used in this [podcast](https://youtu.be/oD3-8CPO9MA) by @chrismarget-
 
 # Deploying the configs into Apstra
 
-The following steps are common to all the projects in this subdirectory
+The following steps are common to all the projects in this subdirectory, except github_integration
 
 ## Entering the directory
 
