@@ -3,8 +3,10 @@ This is intended as a repository of sample terraform configs for Apstra.
 Each directory in this project tracks a different project that uses the terraform provider for Apstra.
 
 ## Projects
-### ai-clusters
-A terraform configs that help perform AI training in a data center with an Apstra-managed network fabric deploying logical devices, racks and templates.
+### ai-cluster-designs
+A set of terraform configs that design network fabrics for AI GPU training, storage and frontend management with Apstra deploying logical devices, racks and templates. Design examples include 64 servers (512 GPUs), 128 servers, 256 servers and beyond with NVIDIA-prescribed rail-optimized topologies.
+### ai-cluster-jvd
+A terraform config for a Juniper Validated Design (JVD) of an AI cluster's 3 fabrics: GPU backend, storage, and frontend management. This example shows an exact small cluster design of two NVIDIA rail-optimzed groups with Juniper QFX leaf switches and high-radix PTX spines, with options for A100s and H100-based servers.
 ### dc_inform_2023q3
 A set of terraform configs and a slide deck about gitops workflows presented by @chrismarget-j in August of 2023.
 ### terraform-apstra-lab

@@ -1,6 +1,6 @@
 # Introduction
-This set of terraform configs help perform AI training in a data center with an Apstra-managed network fabric deploying logical devices, racks and templates.
-The logical devices, racks and templates defined here create the NVIDIA Rail optimized topology outlined [here](https://developer.nvidia.com/blog/doubling-all2all-performance-with-nvidia-collective-communication-library-2-12/)
+This set of terraform configs help setup data center fabrics for an AI cluster. AI training requires a dedicated backend GPU fabric, a dedicated storage fabric, and a frontend management fabric. Here we show such Apstra-managed network fabrics deploying logical devices, racks and templates for DGX (or HGX equivalent) servers based on A100 and H100 GPUs having 200GE and 400GE access connectivity respectively.
+The logical devices, racks and templates defined here create the NVIDIA Rail-optimized topology outlined [here](https://developer.nvidia.com/blog/doubling-all2all-performance-with-nvidia-collective-communication-library-2-12/)
 .
 # Usage
 
