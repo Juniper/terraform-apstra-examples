@@ -380,7 +380,6 @@ resource "apstra_rack_type" "Storage-Weka" {
   }
 }
 
-
 #
 # Rack for the management ports from the HGX and DGX servers
 #
@@ -466,6 +465,12 @@ resource "apstra_template_rack_based" "AI_Cluster_GPUs" {
   rack_infos = {
     (apstra_rack_type.GPU-Backend.id) = { count = 2 }
   }
+  lifecycle {
+    replace_triggered_by = [
+      apstra_logical_device.AI-Spine_288x400,
+      apstra_rack_type.GPU-Backend,
+    ]
+  }
 }
 
 resource "apstra_template_rack_based" "AI_Cluster_Storage" {
@@ -480,6 +485,13 @@ resource "apstra_template_rack_based" "AI_Cluster_Storage" {
     (apstra_rack_type.Storage-AI.id)   = { count = 1 }
     (apstra_rack_type.Storage-Weka.id) = { count = 1 }
   }
+  lifecycle {
+    replace_triggered_by = [
+      apstra_logical_device.AI-Spine_32x400,
+      apstra_rack_type.GPU-Backend,
+      apstra_rack_type.Storage-Weka,
+    ]
+  }
 }
 
 resource "apstra_template_rack_based" "AI_Cluster_Mgmt" {
@@ -493,5 +505,12 @@ resource "apstra_template_rack_based" "AI_Cluster_Mgmt" {
   rack_infos = {
     (apstra_rack_type.Frontend-Mgmt-AI.id)   = { count = 1 }
     (apstra_rack_type.Frontend-Mgmt-Weka.id) = { count = 1 }
+  }
+  lifecycle {
+    replace_triggered_by = [
+      apstra_logical_device.AI-Spine_32x400.id,
+      apstra_rack_type.Frontend-Mgmt-AI,
+      apstra_rack_type.Frontend-Mgmt-Weka,
+    ]
   }
 }
