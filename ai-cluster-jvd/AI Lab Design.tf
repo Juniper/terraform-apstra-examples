@@ -7,7 +7,7 @@ resource "apstra_logical_device" "AI-Spine_32x400" {
   name = "AI-Spine 32x400"
   panels = [
     {
-      rows = 2
+      rows    = 2
       columns = 16
       port_groups = [
         {
@@ -20,20 +20,20 @@ resource "apstra_logical_device" "AI-Spine_32x400" {
   ]
 }
 
-resource "apstra_logical_device" "AI-Leaf_24x400_16x200" {
+resource "apstra_logical_device" "AI-Leaf_16x400_32x200" {
   name = "AI-Leaf 24x400 and 16x200"
   panels = [
     {
-      rows = 2
-      columns = 20
+      rows    = 2
+      columns = 24
       port_groups = [
         {
-          port_count = 24
+          port_count = 16
           port_speed = "400G"
           port_roles = ["superspine", "spine", "leaf", "peer", "access", "generic", "unused"]
         },
         {
-          port_count = 16
+          port_count = 32
           port_speed = "200G"
           port_roles = ["superspine", "spine", "leaf", "peer", "access", "generic", "unused"]
         },
@@ -46,7 +46,7 @@ resource "apstra_logical_device" "AI-Leaf_16x400_64x100" {
   name = "AI-Leaf 16x400G 64x100G "
   panels = [
     {
-      rows = 2
+      rows    = 2
       columns = 40
       port_groups = [
         {
@@ -66,8 +66,9 @@ resource "apstra_logical_device" "AI-Leaf_16x400_64x100" {
 
 # LD for the Juniper PTX10000 line card of 36x400GE and 10008
 locals {
-  panel_2x18x400 = {
-    rows = 2
+  ptx_card_count = 2
+  ptx_card_definition = {
+    rows    = 2
     columns = 18
     port_groups = [
       {
@@ -81,10 +82,7 @@ locals {
 
 resource "apstra_logical_device" "AI-Spine_288x400" {
   name   = "AI-Spine 288x400"
-  panels = [
-    local.panel_2x18x400, local.panel_2x18x400, local.panel_2x18x400, local.panel_2x18x400,
-    local.panel_2x18x400, local.panel_2x18x400, local.panel_2x18x400, local.panel_2x18x400,
-  ]
+  panels = [for i in range(local.ptx_card_count) : local.ptx_card_definition]
 }
 
 
@@ -100,16 +98,16 @@ resource "apstra_logical_device" "A100-Mgmt_1x100G" {
   name = "A100 Server Mgmt 1x100G"
   panels = [
     {
-    rows = 1
-    columns = 1
-    port_groups = [
-      {
-        port_count = 1
-        port_speed = "100G"
-        port_roles = ["leaf", "access"]
-      },
-    ]
-  }
+      rows    = 1
+      columns = 1
+      port_groups = [
+        {
+          port_count = 1
+          port_speed = "100G"
+          port_roles = ["leaf", "access"]
+        },
+      ]
+    }
   ]
 }
 
@@ -117,16 +115,16 @@ resource "apstra_logical_device" "A100-Storage_1x200G" {
   name = "A100 Server Storage 1x200G"
   panels = [
     {
-    rows = 1
-    columns = 1
-    port_groups = [
-      {
-        port_count = 1
-        port_speed = "200G"
-        port_roles = ["leaf", "access"]
-      },
-    ]
-  }
+      rows    = 1
+      columns = 1
+      port_groups = [
+        {
+          port_count = 1
+          port_speed = "200G"
+          port_roles = ["leaf", "access"]
+        },
+      ]
+    }
   ]
 }
 
@@ -134,16 +132,16 @@ resource "apstra_logical_device" "A100-GPU_8x200G" {
   name = "A100 Server GPU 8x200G"
   panels = [
     {
-    rows = 2
-    columns = 4
-    port_groups = [
-      {
-        port_count = 8
-        port_speed = "200G"
-        port_roles = ["leaf", "access"]
-      },
-    ]
-  }
+      rows    = 2
+      columns = 4
+      port_groups = [
+        {
+          port_count = 8
+          port_speed = "200G"
+          port_roles = ["leaf", "access"]
+        },
+      ]
+    }
   ]
 }
 
@@ -157,16 +155,16 @@ resource "apstra_logical_device" "H100-Mgmt_1x100G" {
   name = "H100 Server Mgmt 1x100G"
   panels = [
     {
-    rows = 1
-    columns = 1
-    port_groups = [
-      {
-        port_count = 1
-        port_speed = "100G"
-        port_roles = ["leaf", "access"]
-      },
-    ]
-  }
+      rows    = 1
+      columns = 1
+      port_groups = [
+        {
+          port_count = 1
+          port_speed = "100G"
+          port_roles = ["leaf", "access"]
+        },
+      ]
+    }
   ]
 }
 
@@ -174,16 +172,16 @@ resource "apstra_logical_device" "H100-Storage_2x400G" {
   name = "H100 Server Storage 2x400G"
   panels = [
     {
-    rows = 1
-    columns = 2
-    port_groups = [
-      {
-        port_count = 2
-        port_speed = "400G"
-        port_roles = ["leaf", "access"]
-      },
-    ]
-  }
+      rows    = 1
+      columns = 2
+      port_groups = [
+        {
+          port_count = 2
+          port_speed = "400G"
+          port_roles = ["leaf", "access"]
+        },
+      ]
+    }
   ]
 }
 
@@ -191,7 +189,7 @@ resource "apstra_logical_device" "H100-GPU_8x400G" {
   name = "H100 Server GPU 8x200G"
   panels = [
     {
-      rows = 2
+      rows    = 2
       columns = 4
       port_groups = [
         {
@@ -214,16 +212,16 @@ resource "apstra_logical_device" "Weka-Mgmt_1x100G" {
   name = "Weka Server Mgmt 1x100G"
   panels = [
     {
-    rows = 1
-    columns = 1
-    port_groups = [
-      {
-        port_count = 1
-        port_speed = "100G"
-        port_roles = ["leaf", "access"]
-      },
-    ]
-  }
+      rows    = 1
+      columns = 1
+      port_groups = [
+        {
+          port_count = 1
+          port_speed = "100G"
+          port_roles = ["leaf", "access"]
+        },
+      ]
+    }
   ]
 }
 
@@ -231,16 +229,16 @@ resource "apstra_logical_device" "Weka-Storage_2x200G" {
   name = "Weka Server Storage 2x200G"
   panels = [
     {
-    rows = 1
-    columns = 2
-    port_groups = [
-      {
-        port_count = 2
-        port_speed = "200G"
-        port_roles = ["leaf", "access"]
-      },
-    ]
-  }
+      rows    = 1
+      columns = 2
+      port_groups = [
+        {
+          port_count = 2
+          port_speed = "200G"
+          port_roles = ["leaf", "access"]
+        },
+      ]
+    }
   ]
 }
 
@@ -257,104 +255,36 @@ resource "apstra_logical_device" "Weka-Storage_2x200G" {
 # 2x400G spine uplinks to achieve 1:1 (no) oversubscription
 
 locals {
-  leaf_definition_2_spine_uplinks = {
-    logical_device_id   = apstra_logical_device.AI-Leaf_24x400_16x200.id
-    spine_link_count    = 2
-    spine_link_speed    = "400G"
+  backend_rack_leaf_count = 8
+  backend_rack_leaf_definition = {
+    logical_device_id = apstra_logical_device.AI-Leaf_16x400_32x200.id
+    spine_link_count  = 2
+    spine_link_speed  = "400G"
   }
 }
 
 
 resource "apstra_rack_type" "GPU-Backend" {
   name                       = "GPU Backend"
-  description = "AI Rail-optimized Rack Group of up to 16 H100-based or 32 A100-based Servers. 2 spine uplinks"
+  description                = "AI Rail-optimized Rack Group of up to 16 H100-based or 32 A100-based Servers. 2 spine uplinks"
   fabric_connectivity_design = "l3clos"
-  leaf_switches = {
-    Leaf1 = local.leaf_definition_2_spine_uplinks,
-    Leaf2 = local.leaf_definition_2_spine_uplinks,
-    Leaf3 = local.leaf_definition_2_spine_uplinks,
-    Leaf4 = local.leaf_definition_2_spine_uplinks,
-    Leaf5 = local.leaf_definition_2_spine_uplinks,
-    Leaf6 = local.leaf_definition_2_spine_uplinks,
-    Leaf7 = local.leaf_definition_2_spine_uplinks,
-    Leaf8 = local.leaf_definition_2_spine_uplinks,
-  }
+  leaf_switches              = { for i in range(local.backend_rack_leaf_count) : "Leaf${i + 1}" => local.backend_rack_leaf_definition }
   generic_systems = {
     DGX-H100 = {
       count             = 2
       logical_device_id = apstra_logical_device.H100-GPU_8x400G.id
-      links = {
-        link1 = {
-          speed              = "400G"
-          target_switch_name = "Leaf1"  
-        },
-        link2 = {
-          speed              = "400G"
-          target_switch_name = "Leaf2"  
-        },
-        link3 = {
-          speed              = "400G"
-          target_switch_name = "Leaf3"  
-        },
-        link4 = {
-          speed              = "400G"
-          target_switch_name = "Leaf4"  
-        },
-        link5 = {
-          speed              = "400G"
-          target_switch_name = "Leaf5"  
-        },
-        link6 = {
-          speed              = "400G"
-          target_switch_name = "Leaf6"  
-        },
-        link7 = {
-          speed              = "400G"
-          target_switch_name = "Leaf7"  
-        },
-        link8 = {
-          speed              = "400G"
-          target_switch_name = "Leaf8"  
-        },
-      }
+      links = { for i in range(local.backend_rack_leaf_count) : "link${i + 1}" => {
+        speed              = "400G"
+        target_switch_name = "Leaf${i + 1}"
+      } }
     },
- HGX-A100 = {
+    HGX-A100 = {
       count             = 4
       logical_device_id = apstra_logical_device.A100-GPU_8x200G.id
-      links = {
-        link1 = {
-          speed              = "200G"
-          target_switch_name = "Leaf1"  
-        },
-        link2 = {
-          speed              = "200G"
-          target_switch_name = "Leaf2"  
-        },
-        link3 = {
-          speed              = "200G"
-          target_switch_name = "Leaf3"  
-        },
-        link4 = {
-          speed              = "200G"
-          target_switch_name = "Leaf4"  
-        },
-        link5 = {
-          speed              = "200G"
-          target_switch_name = "Leaf5"  
-        },
-        link6 = {
-          speed              = "200G"
-          target_switch_name = "Leaf6"  
-        },
-        link7 = {
-          speed              = "200G"
-          target_switch_name = "Leaf7"  
-        },
-        link8 = {
-          speed              = "200G"
-          target_switch_name = "Leaf8"  
-        },
-      }
+      links = { for i in range(local.backend_rack_leaf_count) : "link${i + 1}" => {
+        speed              = "200G"
+        target_switch_name = "Leaf${i + 1}"
+      } }
     }
   }
 }
@@ -372,36 +302,28 @@ resource "apstra_rack_type" "GPU-Backend" {
 # and we will connect 4 to each leaf
 
 locals {
-  leaf_definition_4_spine_uplinks = {
-    logical_device_id   = apstra_logical_device.AI-Leaf_24x400_16x200.id
-    spine_link_count    = 4
-    spine_link_speed    = "400G"
+  storage_rack_leaf_count = 2
+  storage_rack_leaf_definition = {
+    logical_device_id = apstra_logical_device.AI-Leaf_16x400_32x200.id
+    spine_link_count  = 4
+    spine_link_speed  = "400G"
   }
 }
 
 
 resource "apstra_rack_type" "Storage-AI" {
   name                       = "Storage-Ports-AI"
-  description = "Rack of the HGX and DGX storage ports"
+  description                = "Rack of the HGX and DGX storage ports"
   fabric_connectivity_design = "l3clos"
-  leaf_switches = {
-    Leaf1 = local.leaf_definition_4_spine_uplinks,
-    Leaf2 = local.leaf_definition_4_spine_uplinks,
-  }
+  leaf_switches              = { for i in range(local.storage_rack_leaf_count) : "Leaf${i + 1}" => local.storage_rack_leaf_definition }
   generic_systems = {
     DGX-H100-Storage = {
       count             = 4
       logical_device_id = apstra_logical_device.H100-Storage_2x400G.id
-      links = {
-        link1 = {
-          speed              = "400G"
-          target_switch_name = "Leaf1"  
-        },
-        link2 = {
-          speed              = "400G"
-          target_switch_name = "Leaf2"
-        },
-      }
+      links = { for i in range(local.storage_rack_leaf_count) : "link${i + 1}" => {
+        speed              = "400G"
+        target_switch_name = "Leaf${i + 1}"
+      } }
     },
     HGX-A100-Storage-1 = {
       count             = 4
@@ -409,7 +331,7 @@ resource "apstra_rack_type" "Storage-AI" {
       links = {
         link1 = {
           speed              = "200G"
-          target_switch_name = "Leaf1"  
+          target_switch_name = "Leaf1"
         },
       }
     },
@@ -436,29 +358,24 @@ resource "apstra_rack_type" "Storage-AI" {
 # We're homing the servers to two switches for redundancy
 #
 
+locals {
+  storage_weka_rack_leaf_count      = 2
+  storage_weka_rack_leaf_definition = local.backend_rack_leaf_definition
+}
 
 resource "apstra_rack_type" "Storage-Weka" {
   name                       = "Storage-Weka"
-  description = "Rack of the Weka server storage ports"
+  description                = "Rack of the Weka server storage ports"
   fabric_connectivity_design = "l3clos"
-  leaf_switches = {
-    Leaf1 = local.leaf_definition_2_spine_uplinks,
-    Leaf2 = local.leaf_definition_2_spine_uplinks,
-  }
+  leaf_switches              = { for i in range(local.storage_weka_rack_leaf_count) : "Leaf${i + 1}" => local.storage_weka_rack_leaf_definition }
   generic_systems = {
     Weka-Storage = {
       count             = 8
       logical_device_id = apstra_logical_device.Weka-Storage_2x200G.id
-      links = {
-        link1 = {
-          speed              = "200G"
-          target_switch_name = "Leaf1"  
-        },
-        link2 = {
-          speed              = "200G"
-          target_switch_name = "Leaf2"
-        },
-      }
+      links = { for i in range(local.storage_weka_rack_leaf_count) : "link${i + 1}" => {
+        speed              = "200G"
+        target_switch_name = "Leaf${i + 1}"
+      } }
     }
   }
 }
@@ -469,19 +386,19 @@ resource "apstra_rack_type" "Storage-Weka" {
 #
 
 locals {
-  leaf_definition100G_2_spine_uplinks = {
-    logical_device_id   = apstra_logical_device.AI-Leaf_16x400_64x100.id
-    spine_link_count    = 2
-    spine_link_speed    = "400G"
+  frontend_leaf_definition = {
+    logical_device_id = apstra_logical_device.AI-Leaf_16x400_64x100.id
+    spine_link_count  = 2
+    spine_link_speed  = "400G"
   }
 }
 
 resource "apstra_rack_type" "Frontend-Mgmt-AI" {
   name                       = "Frontend-AI"
-  description = "Rack of the AI server management ports"
+  description                = "Rack of the AI server management ports"
   fabric_connectivity_design = "l3clos"
   leaf_switches = {
-    Leaf1 = local.leaf_definition100G_2_spine_uplinks,
+    Leaf1 = local.frontend_leaf_definition,
   }
   generic_systems = {
     HGX-Mgmt = {
@@ -490,7 +407,7 @@ resource "apstra_rack_type" "Frontend-Mgmt-AI" {
       links = {
         link1 = {
           speed              = "100G"
-          target_switch_name = "Leaf1"  
+          target_switch_name = "Leaf1"
         },
       }
     },
@@ -500,7 +417,7 @@ resource "apstra_rack_type" "Frontend-Mgmt-AI" {
       links = {
         link1 = {
           speed              = "100G"
-          target_switch_name = "Leaf1"  
+          target_switch_name = "Leaf1"
         },
       }
     },
@@ -513,10 +430,10 @@ resource "apstra_rack_type" "Frontend-Mgmt-AI" {
 
 resource "apstra_rack_type" "Frontend-Mgmt-Weka" {
   name                       = "Frontend-Weka"
-  description = "Rack of the Weka server management ports"
+  description                = "Rack of the Weka server management ports"
   fabric_connectivity_design = "l3clos"
   leaf_switches = {
-    Leaf1 = local.leaf_definition100G_2_spine_uplinks,
+    Leaf1 = local.frontend_leaf_definition,
   }
   generic_systems = {
     Weka-Storage = {
@@ -525,7 +442,7 @@ resource "apstra_rack_type" "Frontend-Mgmt-Weka" {
       links = {
         link1 = {
           speed              = "100G"
-          target_switch_name = "Leaf1"  
+          target_switch_name = "Leaf1"
         },
       }
     }
@@ -547,7 +464,7 @@ resource "apstra_template_rack_based" "AI_Cluster_GPUs" {
     logical_device_id = apstra_logical_device.AI-Spine_288x400.id
   }
   rack_infos = {
-    (apstra_rack_type.GPU-Backend.id)    = { count = 2 }
+    (apstra_rack_type.GPU-Backend.id) = { count = 2 }
   }
 }
 
@@ -560,8 +477,8 @@ resource "apstra_template_rack_based" "AI_Cluster_Storage" {
     logical_device_id = apstra_logical_device.AI-Spine_32x400.id
   }
   rack_infos = {
-    (apstra_rack_type.Storage-AI.id)    = { count = 1 }
-    (apstra_rack_type.Storage-Weka.id)  = { count = 1 }
+    (apstra_rack_type.Storage-AI.id)   = { count = 1 }
+    (apstra_rack_type.Storage-Weka.id) = { count = 1 }
   }
 }
 
@@ -574,7 +491,7 @@ resource "apstra_template_rack_based" "AI_Cluster_Mgmt" {
     logical_device_id = apstra_logical_device.AI-Spine_32x400.id
   }
   rack_infos = {
-    (apstra_rack_type.Frontend-Mgmt-AI.id)    = { count = 1 }
-    (apstra_rack_type.Frontend-Mgmt-Weka.id)  = { count = 1 }
+    (apstra_rack_type.Frontend-Mgmt-AI.id)   = { count = 1 }
+    (apstra_rack_type.Frontend-Mgmt-Weka.id) = { count = 1 }
   }
 }

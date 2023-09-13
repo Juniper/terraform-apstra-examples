@@ -17,8 +17,6 @@ resource "apstra_datacenter_blueprint" "mgmt_bp" {
   template_id = apstra_template_rack_based.AI_Cluster_Mgmt.id
 }
 
-
-
 locals {
   blueprints = [
     apstra_datacenter_blueprint.gpus_bp,
