@@ -516,13 +516,45 @@ resource "apstra_template_rack_based" "AI_Cluster_Mgmt" {
 }
 
 locals {
-  ai_leaf_16x400_64x100_spine_port_count    = apstra_logical_device.AI-Leaf_16x400_64x100.panels[0].port_groups[0].port_count
-  ai_leaf_16x400_64x100_spine_ld_port_first = 1
-  ai_leaf_16x400_64x100_spine_dp_port_first = 0
+  ai_leaf_16x400_32x200_spine_port_count    = apstra_logical_device.AI-Leaf_16x400_32x200.panels[0].port_groups[0].port_count // the "spine" port group has a count of 16
+  ai_leaf_16x400_32x200_spine_ld_port_first = 1                                                                               // first logical device "spine" port is 1/1
+  ai_leaf_16x400_32x200_spine_dp_port_first = 0                                                                               // first physical device "spine" port is et-0/0/0
 
-  ai_leaf_16x400_64x100_server_port_count    = apstra_logical_device.AI-Leaf_16x400_64x100.panels[0].port_groups[1].port_count
-  ai_leaf_16x400_64x100_server_ld_port_first = 17
-  ai_leaf_16x400_64x100_server_dp_port_first = 16
+  ai_leaf_16x400_32x200_server_port_count    = apstra_logical_device.AI-Leaf_16x400_32x200.panels[0].port_groups[1].port_count                // the "server" port group has a count of 32
+  ai_leaf_16x400_32x200_server_ld_port_first = local.ai_leaf_16x400_32x200_spine_ld_port_first + local.ai_leaf_16x400_32x200_spine_port_count // first logical device "server" port is 1/17
+  ai_leaf_16x400_32x200_server_dp_port_first = local.ai_leaf_16x400_32x200_spine_dp_port_first + local.ai_leaf_16x400_32x200_spine_port_count // first physical device "server" port is et-0/0/16
+}
+
+resource "apstra_interface_map" "AI-Leaf_16x400_32x200" {
+  name              = "${apstra_logical_device.AI-Leaf_16x400_32x200.name}__QFX5220-32CD"
+  logical_device_id = apstra_logical_device.AI-Leaf_16x400_32x200.id
+  device_profile_id = "Custom_Juniper_QFX5220-32CD_200G_Junos"
+  interfaces = flatten([
+    // the spine ports
+    [for i in range(local.ai_leaf_16x400_32x200_spine_port_count) :
+      {
+        logical_device_port     = "1/${local.ai_leaf_16x400_32x200_spine_ld_port_first + i}"      // 1/1 through 1/16
+        physical_interface_name = "et-0/0/${local.ai_leaf_16x400_32x200_spine_dp_port_first + i}" // et-0/0/0 through et-0/0/15
+      }
+    ],
+    // the server ports
+    [for i in range(local.ai_leaf_16x400_32x200_server_port_count) :
+      {
+        logical_device_port     = "1/${local.ai_leaf_16x400_32x200_server_ld_port_first + i}"                          // 1/17 through 1/48
+        physical_interface_name = "et-0/0/${local.ai_leaf_16x400_32x200_server_dp_port_first + floor(i / 2)}:${i % 2}" // et-0/0/16:0 through et-0/0/31:2
+      }
+    ],
+  ])
+}
+
+locals {
+  ai_leaf_16x400_64x100_spine_port_count    = apstra_logical_device.AI-Leaf_16x400_64x100.panels[0].port_groups[0].port_count // the "spine" port group has a count of 16
+  ai_leaf_16x400_64x100_spine_ld_port_first = 1                                                                               // first logical device "spine" port is 1/1
+  ai_leaf_16x400_64x100_spine_dp_port_first = 0                                                                               // first physical device "spine" port is et-0/0/0
+
+  ai_leaf_16x400_64x100_server_port_count    = apstra_logical_device.AI-Leaf_16x400_64x100.panels[0].port_groups[1].port_count                // the "server" port group has a count of 64
+  ai_leaf_16x400_64x100_server_ld_port_first = local.ai_leaf_16x400_64x100_spine_ld_port_first + local.ai_leaf_16x400_64x100_spine_port_count // first logical device "server" port is 1/17
+  ai_leaf_16x400_64x100_server_dp_port_first = local.ai_leaf_16x400_64x100_spine_dp_port_first + local.ai_leaf_16x400_64x100_spine_port_count // first physical device "server" port is et-0/0/16
 }
 
 resource "apstra_interface_map" "AI-Leaf_16x400_64x100" {
@@ -530,16 +562,18 @@ resource "apstra_interface_map" "AI-Leaf_16x400_64x100" {
   logical_device_id = apstra_logical_device.AI-Leaf_16x400_64x100.id
   device_profile_id = "Juniper_QFX5220-32CD_Junos"
   interfaces = flatten([
+    // the spine ports
     [for i in range(local.ai_leaf_16x400_64x100_spine_port_count) :
       {
-        logical_device_port     = "1/${local.ai_leaf_16x400_64x100_spine_ld_port_first + i}"
-        physical_interface_name = "et-0/0/${local.ai_leaf_16x400_64x100_spine_dp_port_first + i}"
+        logical_device_port     = "1/${local.ai_leaf_16x400_64x100_spine_ld_port_first + i}"      // 1/1 through 1/16
+        physical_interface_name = "et-0/0/${local.ai_leaf_16x400_64x100_spine_dp_port_first + i}" // et-0/0/0 through et-0/0/15
       }
     ],
+    // the server ports
     [for i in range(local.ai_leaf_16x400_64x100_server_port_count) :
       {
-        logical_device_port     = "1/${local.ai_leaf_16x400_64x100_server_ld_port_first + i}"
-        physical_interface_name = "et-0/0/${local.ai_leaf_16x400_64x100_server_dp_port_first + floor(i / 4)}:${i % 4}"
+        logical_device_port     = "1/${local.ai_leaf_16x400_64x100_server_ld_port_first + i}"                          // 1/17 through 1/48
+        physical_interface_name = "et-0/0/${local.ai_leaf_16x400_64x100_server_dp_port_first + floor(i / 4)}:${i % 4}" // et-0/0/16:0 through et-0/0/31:3
       }
     ],
   ])
