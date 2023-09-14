@@ -514,3 +514,33 @@ resource "apstra_template_rack_based" "AI_Cluster_Mgmt" {
     ]
   }
 }
+
+locals {
+  ai_leaf_16x400_64x100_spine_port_count    = apstra_logical_device.AI-Leaf_16x400_64x100.panels[0].port_groups[0].port_count
+  ai_leaf_16x400_64x100_spine_ld_port_first = 1
+  ai_leaf_16x400_64x100_spine_dp_port_first = 0
+
+  ai_leaf_16x400_64x100_server_port_count    = apstra_logical_device.AI-Leaf_16x400_64x100.panels[0].port_groups[1].port_count
+  ai_leaf_16x400_64x100_server_ld_port_first = 17
+  ai_leaf_16x400_64x100_server_dp_port_first = 16
+}
+
+resource "apstra_interface_map" "AI-Leaf_16x400_64x100" {
+  name              = "${apstra_logical_device.AI-Leaf_16x400_64x100.name}__QFX5220-32CD"
+  logical_device_id = apstra_logical_device.AI-Leaf_16x400_64x100.id
+  device_profile_id = "Juniper_QFX5220-32CD_Junos"
+  interfaces = flatten([
+    [for i in range(local.ai_leaf_16x400_64x100_spine_port_count) :
+      {
+        logical_device_port     = "1/${local.ai_leaf_16x400_64x100_spine_ld_port_first + i}"
+        physical_interface_name = "et-0/0/${local.ai_leaf_16x400_64x100_spine_dp_port_first + i}"
+      }
+    ],
+    [for i in range(local.ai_leaf_16x400_64x100_server_port_count) :
+      {
+        logical_device_port     = "1/${local.ai_leaf_16x400_64x100_server_ld_port_first + i}"
+        physical_interface_name = "et-0/0/${local.ai_leaf_16x400_64x100_server_dp_port_first + floor(i / 4)}:${i % 4}"
+      }
+    ],
+  ])
+}
