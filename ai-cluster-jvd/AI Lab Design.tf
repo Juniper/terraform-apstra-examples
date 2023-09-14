@@ -21,7 +21,7 @@ resource "apstra_logical_device" "AI-Spine_32x400" {
 }
 
 resource "apstra_logical_device" "AI-Leaf_16x400_32x200" {
-  name = "AI-Leaf 24x400 and 16x200"
+  name = "AI-Leaf 16x400 and 32x200"
   panels = [
     {
       rows    = 2
