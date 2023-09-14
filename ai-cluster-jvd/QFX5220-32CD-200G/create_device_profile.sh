@@ -2,9 +2,9 @@
 set -euo pipefail
 
 # run the following in the shell before invoking this script
-# export ASPTRA_USER="admin"
-# export ASPTRA_PASS="password"
-# export ASPTRA_URL="https://host:port"
+# export APSTRA_USER="admin"
+# export APSTRA_PASS="password"
+# export APSTRA_URL="https://host:port"
 # export APSTRA_TLS_VALIDATION_DISABLED="" // presence of this variable causes TLS verification to be skipped. An empty string works.
 
 DIE=""
@@ -16,7 +16,7 @@ if which jq > /dev/null; then :; else echo "script requires jq"; DIE=true; fi
 
 if [ -n "$DIE" ]; then exit; fi
 
-if printenv APSTRA_TLS_NO_VERIFY > /dev/null; then SKIP_TLS="-k"; fi
+if printenv APSTRA_TLS_VALIDATION_DISABLED > /dev/null; then SKIP_TLS="-k"; fi
 
 echo "authenticating with API..."
 CURL_OUT=$(curl $SKIP_TLS -sX POST "$APSTRA_URL/api/aaa/login" -H "accept: application/json" -H "content-type: application/json" -d "{ \"username\": \"$APSTRA_USER\", \"password\": \"$APSTRA_PASS\"}")
