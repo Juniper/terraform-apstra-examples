@@ -10,7 +10,7 @@ locals {
 
 data "apstra_datacenter_systems" "leafs" {
   blueprint_id = apstra_datacenter_blueprint.lab_guide.id
-  filters = {
+  filter = {
     role        = "leaf"
     system_type = "switch"
   }
