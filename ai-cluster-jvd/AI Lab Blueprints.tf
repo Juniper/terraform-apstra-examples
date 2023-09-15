@@ -17,6 +17,10 @@ resource "apstra_datacenter_blueprint" "mgmt_bp" {
   template_id = apstra_template_rack_based.AI_Cluster_Mgmt.id
 }
 
+#
+# Populate the blueprint ASNs and addressing from resource pools
+#
+
 locals {
   blueprints = [
     apstra_datacenter_blueprint.gpus_bp,
@@ -70,14 +74,13 @@ resource "apstra_datacenter_resource_pool_allocation" "ipv4" {
   role = local.ipv4_pool_roles[count.index % length(local.ipv4_pool_roles)]
 }
 
+#
+# Add configlets to the fabrics. We will assume the DLB configlet and DCQCN configlet
+# are not necessary for the management fabric/blueprint.
+#
+
 resource "apstra_datacenter_configlet" "DLB_GPUS_BP" {
   blueprint_id = apstra_datacenter_blueprint.gpus_bp.id
-  catalog_configlet_id = apstra_configlet.DLBForLeaf.id
-  condition = "role in [\"leaf\"]"
-}
-
-resource "apstra_datacenter_configlet" "DLB_MGMT_BP" {
-  blueprint_id = apstra_datacenter_blueprint.mgmt_bp.id
   catalog_configlet_id = apstra_configlet.DLBForLeaf.id
   condition = "role in [\"leaf\"]"
 }
