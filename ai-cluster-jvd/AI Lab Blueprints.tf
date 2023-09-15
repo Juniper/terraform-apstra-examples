@@ -69,3 +69,21 @@ resource "apstra_datacenter_resource_pool_allocation" "ipv4" {
   pool_ids     = [apstra_ipv4_pool.all[count.index].id]
   role = local.ipv4_pool_roles[count.index % length(local.ipv4_pool_roles)]
 }
+
+resource "apstra_datacenter_configlet" "DLB_GPUS_BP" {
+  blueprint_id = apstra_datacenter_blueprint.gpus_bp.id
+  catalog_configlet_id = apstra_configlet.DLBForLeaf.id
+  condition = "role in [\"leaf\"]"
+}
+
+resource "apstra_datacenter_configlet" "DLB_MGMT_BP" {
+  blueprint_id = apstra_datacenter_blueprint.mgmt_bp.id
+  catalog_configlet_id = apstra_configlet.DLBForLeaf.id
+  condition = "role in [\"leaf\"]"
+}
+
+resource "apstra_datacenter_configlet" "DLB_STORAGE_BP" {
+  blueprint_id = apstra_datacenter_blueprint.storage_bp.id
+  catalog_configlet_id = apstra_configlet.DLBForLeaf.id
+  condition = "role in [\"leaf\"]"
+}
