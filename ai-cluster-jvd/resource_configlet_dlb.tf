@@ -61,7 +61,7 @@
 
 locals {
   cfg_data = {
-    name = "DLB for AI leaves"
+    name = "DLB"
     generators = [
       {
         config_style  = "junos"
@@ -91,7 +91,7 @@ locals {
   }
 }
 # Create Catalog Configlet
-resource "apstra_configlet" "DLBForLeaf" {
+resource "apstra_configlet" "DLB" {
   name       = local.cfg_data.name
   generators = local.cfg_data.generators
 }
