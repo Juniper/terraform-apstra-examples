@@ -67,8 +67,8 @@ resource "apstra_logical_device" "AI-Leaf_Small_200" {
 # The above racks are good for uniform stripes of A100 (200G) or H100 (400G) access (not both).
 # They're also used for storage racks with uniform server ports.
 # The JVD example will mix 4 A100 servers and 2 H100 servers in the same stripe, so we will
-# divide the access ports to half 200 half 400. No oversubscription example here will be
-# geared to using either the H100s or A100s, but not both (in rack below)
+# divide the access ports to half 200 half 400. No oversubscription (spine uplinks) will
+#  be based on the actual number of servers in use in the rack
 resource "apstra_logical_device" "AI-LabLeaf_Small" {
   name = "AI-LabLeaf Small 16x400, 16x200 and 8x400"
   panels = [
@@ -183,8 +183,8 @@ resource "apstra_logical_device" "AI-Leaf_Medium_64" {
 
 # The above racks are good for uniform stripes of A100 (200G) or H100 (400G) access (not both).
 # The JVD example will mix 4 A100 servers and 2 H100 servers in the same stripe, so we will
-# divide the access ports to half 200 half 400. No oversubscription example here will be
-# geared to using either the H100s or A100s, but not both (in rack below)
+# divide the access ports to half 200 half 400. No oversubscription (spine uplinks) will
+#  be based on the actual number of servers in use in the rack
 resource "apstra_logical_device" "AI-LabLeaf_Medium" {
   name = "AI-LabLeaf Medium 32x400, 32x200 and 16x400"
   panels = [
@@ -240,8 +240,8 @@ resource "apstra_logical_device" "AI-Spine_288x400" {
 # Lambda Labs Hyperplane8-A100
 #
 # Standard networking: 1x NVIDIA ConnectX-6 Dx adapter card, 100GbE, dual-port QSFP28, AIOM PCIe 4.0 x16
-# Storage Networking: 1x 200 Gbps NVIDIA ConnectX-6 VPI NIC: Dual-port QSFP56, HDR InfiniBand/Ethernet#
-# GPUDirect RDMA Networking: 8x NVIDIA ConnectX-7 Adapter Card 200Gb/s NDR200 IB Single-port OSFP PCIe 4.0 x16
+# Storage Networking: 1x 200 GbE NVIDIA ConnectX-6 VPI NIC: Dual-port QSFP56
+# GPUDirect RDMA Networking: 8x NVIDIA ConnectX-7 Adapter Card 200GbE Single-port QSFP PCIe 4.0 x16
 
 resource "apstra_logical_device" "A100-Mgmt_1x100G" {
   name = "A100 Server Mgmt 1x100G"
@@ -355,7 +355,7 @@ resource "apstra_logical_device" "H100-GPU_8x400G" {
 # Weka Server Storage Nodes
 #
 # Standard networking: 1x NVIDIA ConnectX-6 Dx adapter card, 100GbE, dual-port QSFP28, PCIe 4.0 x16
-# Storage Networking: 2x NVIDIA ConnectX-6 VPI adapter card, HDR IB (200Gb/s) and 200GbE, dual-port QSFP56, OCP 3.0
+# Storage Networking: 2x NVIDIA ConnectX-6 VPI adapter card, 200GbE, dual-port QSFP56, OCP 3.0
 
 resource "apstra_logical_device" "Weka-Mgmt_1x100G" {
   name = "Weka Server Mgmt 1x100G"
@@ -400,8 +400,8 @@ resource "apstra_logical_device" "Weka-Storage_2x200G" {
 # Rack for the GPU Compute backend fabric
 #
 # Populated with 4 A100-based servers and 2 H100-based servers, each leaf has
-# 4x200G + 2x400G but tests will use only A100 or H100 initially, so we use
-# 2x400G spine uplinks to achieve 1:1 (no) oversubscription
+# 4x200G + 2x400G
+# 2x400G spine uplinks (to 2 spines) to achieve 1:1 (no) oversubscription
 
 locals {
   backend_rack_leaf_count = 8
@@ -479,7 +479,6 @@ resource "apstra_rack_type" "GPU-Backend_Med" {
 #
 # We are basing spine uplinks to achieve 1:1 (no) oversubscription
 # based on the 4x400G access links from the H100 servers.
-# It will result in some undersubscription when A100 is in use.
 #
 # The 4 DGX-H100 servers have 2 storage ports and we will home those
 # to two separate leafs. The 8 HGX-A100 servers have only one storage port
@@ -489,7 +488,7 @@ locals {
   storage_rack_leaf_count = 2
   storage_rack_leaf_definition = {
     logical_device_id = apstra_logical_device.AI-Leaf_Small_200.id
-    spine_link_count  = 4
+    spine_link_count  = 3
     spine_link_speed  = "400G"
   }
 }
@@ -504,10 +503,16 @@ resource "apstra_rack_type" "Storage-AI" {
     DGX-H100-Storage = {
       count             = 4
       logical_device_id = apstra_logical_device.H100-Storage_2x400G.id
-      links = { for i in range(local.storage_rack_leaf_count) : "link${i + 1}" => {
-        speed              = "400G"
-        target_switch_name = "Leaf${i + 1}"
-      } }
+      links = {
+        link1 = {
+          speed              = "400G"
+          target_switch_name = "Leaf1"
+        },
+        link2 = {
+          speed              = "400G"
+          target_switch_name = "Leaf2"
+        },
+      }
     },
     HGX-A100-Storage-1 = {
       count             = 4
