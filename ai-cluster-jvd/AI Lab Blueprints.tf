@@ -33,6 +33,11 @@ locals {
   first_asn      = 100
   asn_pool_size  = 100
 
+#
+# 10.0.0.0/24, 10.0.1.0/24, 10.0.2.0/24 for the GPU fabric
+# 10.0.3.0/24, 10.0.4.0/24, 10.0.5.0/24 for the mgmt fabric
+# 10.0.6.0/24, 10.0.7.0/24, 10.0.8.0/24 for the storage fabric
+#
   ipv4_pool_roles       = ["spine_loopback_ips", "leaf_loopback_ips", "spine_leaf_link_ips"]
   ipv4_block           = "10.0.0.0/8"
   ipv4_pool_extra_bits = 16
