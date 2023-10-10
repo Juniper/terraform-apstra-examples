@@ -2,13 +2,10 @@
 # Instantiate a blueprints from the previously created templates
 #
 
-locals {
-  all_qfx_backend = true # change to false for PTX spines high-radix blueprint
-}
 
 resource "apstra_datacenter_blueprint" "gpus_bp" {
   name        = "Backend GPU Fabric"
-  template_id = local.all_qfx_backend ? apstra_template_rack_based.AI_Cluster_GPUs_Medium.id : apstra_template_rack_based.AI_Cluster_GPUs_Large.id
+  template_id = var.all_qfx_backend ? apstra_template_rack_based.AI_Cluster_GPUs_Medium.id : apstra_template_rack_based.AI_Cluster_GPUs_Large.id
 }
 
 resource "apstra_datacenter_blueprint" "storage_bp" {
@@ -101,9 +98,7 @@ resource "apstra_datacenter_device_allocation" "storage_spines" {
 resource "apstra_datacenter_device_allocation" "gpus_spines" {
   count                    = 2
   blueprint_id             = apstra_datacenter_blueprint.gpus_bp.id
-# TODO add IM for PTX
-#  initial_interface_map_id = local.all_qfx_backend ? apstra_interface_map.AI-Spine_64x400.id : apstra_interface_map.AI-Spine_288x400.id
-  initial_interface_map_id = local.all_qfx_backend ? apstra_interface_map.AI-Spine_64x400.id : "PTX Spine IM is not yet created"
+  initial_interface_map_id = var.all_qfx_backend ? apstra_interface_map.AI-Spine_64x400.id : apstra_interface_map.AI-Spine-PTX10008_72x400.id
   node_name                = "spine${count.index + 1}"
   deploy_mode              = "deploy"
 }
@@ -167,7 +162,7 @@ resource "apstra_datacenter_device_allocation" "gpu_leafs2" {
 resource "apstra_datacenter_configlet" "DLB_GPUS_BP" {
   blueprint_id = apstra_datacenter_blueprint.gpus_bp.id
   catalog_configlet_id = apstra_configlet.DLB.id
-  condition = local.all_qfx_backend ? "role in [\"leaf\", \"spine\"]" : "role in [\"leaf\"]"
+  condition = var.all_qfx_backend ? "role in [\"leaf\", \"spine\"]" : "role in [\"leaf\"]"
 }
 
 resource "apstra_datacenter_configlet" "DLB_STORAGE_BP" {

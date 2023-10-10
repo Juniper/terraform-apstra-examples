@@ -1,6 +1,6 @@
 # Organization of this file:
 #
-# Design elements in sequence of LDs, then racks, then templates, then interface maps
+# Design elements in sequence of LDs, then racks, then templates
 
 # LD for the Juniper QFX5220 (aka Small leaf)
 resource "apstra_logical_device" "AI-Spine_32x400" {
@@ -212,8 +212,13 @@ resource "apstra_logical_device" "AI-LabLeaf_Medium" {
   ]
 }
 
+#
+# The PTX will be used for the large template size due to expandable modular chassis
+# Here we use the 8-line card example
+#
+# LD for the Juniper PTX10000 line card of 36x400GE and PTX10008
+# example with fully loaded chassis
 
-# LD for the Juniper PTX10000 line card of 36x400GE and 10008
 locals {
   ptx_card_count = 2
   ptx_card_definition = {
@@ -232,6 +237,29 @@ locals {
 resource "apstra_logical_device" "AI-Spine_288x400" {
   name   = "AI-Spine 288x400"
   panels = [for i in range(local.ptx_card_count) : local.ptx_card_definition]
+}
+
+# LD for the Juniper PTX10000 line card of 36x400GE and PTX10008
+# example with 2 line cards which is used in actual tested lab setup
+
+locals {
+  ptx_lab_card_count = 2
+  ptx_lab_card_definition = {
+    rows    = 2
+    columns = 18
+    port_groups = [
+      {
+        port_count = 36
+        port_speed = "400G"
+        port_roles = ["superspine", "spine", "leaf", "unused", "generic"]
+      },
+    ]
+  }
+}
+
+resource "apstra_logical_device" "AI-Spine_72x400" {
+  name   = "AI-Spine 72x400"
+  panels = [for i in range(local.ptx_lab_card_count) : local.ptx_lab_card_definition]
 }
 
 
@@ -652,13 +680,14 @@ resource "apstra_rack_type" "Frontend-Mgmt-Weka" {
 # Smaller could be fewer line card per chassis (room to grow) or PTX10004
 # Larger could be PTX10016 or (future) 800G line cards
 # Adjust racks as needed for scale. This example is with one stripe of 5220s and one of 5230s
+
 resource "apstra_template_rack_based" "AI_Cluster_GPUs_Large" {
   name                     = "AI Cluster GPU Fabric - Large"
   asn_allocation_scheme    = "unique"
   overlay_control_protocol = "static"
   spine = {
     count             = 2
-    logical_device_id = apstra_logical_device.AI-Spine_288x400.id
+    logical_device_id = apstra_logical_device.AI-Spine_72x400.id
   }
   rack_infos = {
     (apstra_rack_type.GPU-Backend_Sml.id) = { count = 1 }
@@ -666,7 +695,7 @@ resource "apstra_template_rack_based" "AI_Cluster_GPUs_Large" {
   }
   lifecycle {
     replace_triggered_by = [
-      apstra_logical_device.AI-Spine_288x400,
+      apstra_logical_device.AI-Spine_72x400,
       apstra_rack_type.GPU-Backend_Sml,
       apstra_rack_type.GPU-Backend_Med,
     ]
@@ -677,6 +706,7 @@ resource "apstra_template_rack_based" "AI_Cluster_GPUs_Large" {
 # Here we will use 5230 (64x400G)
 # Smaller would be 5220 (32x400G), and (future) larger 5240 (64x800G)
 # Adjust racks as needed for scale. This example is with one stripe of 5220s and one of 5230s
+
 resource "apstra_template_rack_based" "AI_Cluster_GPUs_Medium" {
   name                     = "AI Cluster GPU Fabric - Medium"
   asn_allocation_scheme    = "unique"
@@ -738,204 +768,4 @@ resource "apstra_template_rack_based" "AI_Cluster_Mgmt" {
       apstra_rack_type.Frontend-Mgmt-Weka,
     ]
   }
-}
-
-#
-# INTERFACE MAPS
-#
-
-
-locals {
-  ai_leaf_small_200_spine_port_count    = apstra_logical_device.AI-LabLeaf_Small.panels[0].port_groups[0].port_count // the 400G "spine" port group has a count of 16
-  ai_leaf_small_200_spine_ld_port_first = 1                                                                          // first logical device "spine" port is 1/1
-  ai_leaf_small_200_spine_dp_port_first = 0                                                                          // first physical device "spine" port is et-0/0/0
-
-  ai_leaf_small_200_server_port_count    = apstra_logical_device.AI-LabLeaf_Small.panels[0].port_groups[1].port_count              // the 200G "server" port group has a count of 16
-  ai_leaf_small_200_server_ld_port_first = local.ai_leaf_small_200_spine_ld_port_first + local.ai_leaf_small_200_spine_port_count  // first logical device "server" port is 1/17
-  ai_leaf_small_200_server_dp_port_first = local.ai_leaf_small_200_spine_dp_port_first + local.ai_leaf_small_200_spine_port_count  // first physical device "server" port is et-0/0/16
-
-  ai_leaf_small_400_server_port_count    = apstra_logical_device.AI-LabLeaf_Small.panels[0].port_groups[2].port_count                // the 400G "server" port group has a count of 8
-  ai_leaf_small_400_server_ld_port_first = local.ai_leaf_small_200_server_ld_port_first + local.ai_leaf_small_200_server_port_count  // first logical device "server" port is 1/33
-  ai_leaf_small_400_server_dp_port_first = local.ai_leaf_small_200_server_dp_port_first + (local.ai_leaf_small_200_server_port_count/2)  // first physical device "server" port is et-0/0/24
-}
-
-resource "apstra_interface_map" "AI-LabLeaf_Small" {
-  name              = "${apstra_logical_device.AI-LabLeaf_Small.name}__QFX5220-32CD"
-  logical_device_id = apstra_logical_device.AI-LabLeaf_Small.id
-  device_profile_id = "Juniper_QFX5220-32CD_Junos"
-  interfaces = flatten([
-    // the spine ports
-    [for i in range(local.ai_leaf_small_200_spine_port_count) :
-      {
-        logical_device_port     = "1/${local.ai_leaf_small_200_spine_ld_port_first + i}"      // 1/1 through 1/16
-        physical_interface_name = "et-0/0/${local.ai_leaf_small_200_spine_dp_port_first + i}" // et-0/0/0 through et-0/0/15
-      }
-    ],
-    // the server ports at 200
-    [for i in range(local.ai_leaf_small_200_server_port_count) :
-      {
-        logical_device_port     = "1/${local.ai_leaf_small_200_server_ld_port_first + i}"                          // 1/17 through 1/48
-        physical_interface_name = "et-0/0/${local.ai_leaf_small_200_server_dp_port_first + floor(i / 2)}:${i % 2}" // et-0/0/16:0 through et-0/0/23:1
-      }
-    ],
-   // the server ports at 400
-    [for i in range(local.ai_leaf_small_400_server_port_count) :
-      {
-        logical_device_port     = "1/${local.ai_leaf_small_400_server_ld_port_first + i}"                 // 1/17 through 1/48
-        physical_interface_name = "et-0/0/${local.ai_leaf_small_400_server_dp_port_first + i}" // et-0/0/24 through et-0/0/31
-      }
-    ],
-  ])
-}
-
-
-locals {
-  ai_leaf_medium_200_spine_port_count    = apstra_logical_device.AI-LabLeaf_Medium.panels[0].port_groups[0].port_count // the 400G "spine" port group has a count of 32
-  ai_leaf_medium_200_spine_ld_port_first = 1                                                                          // first logical device "spine" port is 1/1
-  ai_leaf_medium_200_spine_dp_port_first = 0                                                                          // first physical device "spine" port is et-0/0/0
-
-  ai_leaf_medium_200_server_port_count    = apstra_logical_device.AI-LabLeaf_Medium.panels[0].port_groups[1].port_count              // the 200G "server" port group has a count of 32
-  ai_leaf_medium_200_server_ld_port_first = local.ai_leaf_medium_200_spine_ld_port_first + local.ai_leaf_medium_200_spine_port_count  // first logical device "server" port is 1/33
-  ai_leaf_medium_200_server_dp_port_first = local.ai_leaf_medium_200_spine_dp_port_first + local.ai_leaf_medium_200_spine_port_count  // first physical device "server" port is et-0/0/32
-
-  ai_leaf_medium_400_server_port_count    = apstra_logical_device.AI-LabLeaf_Medium.panels[0].port_groups[2].port_count                // the 400G "server" port group has a count of 16
-  ai_leaf_medium_400_server_ld_port_first = local.ai_leaf_medium_200_server_ld_port_first + local.ai_leaf_medium_200_server_port_count  // first logical device "server" port is 1/64
-  ai_leaf_medium_400_server_dp_port_first = local.ai_leaf_medium_200_server_dp_port_first + (local.ai_leaf_medium_200_server_port_count/2)  // first physical device "server" port is et-0/0/48
-}
-
-resource "apstra_interface_map" "AI-LabLeaf_Medium" {
-  name              = "${apstra_logical_device.AI-LabLeaf_Medium.name}__QFX5230-64CD"
-  logical_device_id = apstra_logical_device.AI-LabLeaf_Medium.id
-  device_profile_id = "Juniper_QFX5230-64CD_Junos"
-  interfaces = flatten([
-    // the spine ports
-    [for i in range(local.ai_leaf_medium_200_spine_port_count) :
-      {
-        logical_device_port     = "1/${local.ai_leaf_medium_200_spine_ld_port_first + i}"      // 1/1 through 1/32
-        physical_interface_name = "et-0/0/${local.ai_leaf_medium_200_spine_dp_port_first + i}" // et-0/0/0 through et-0/0/31
-      }
-    ],
-    // the server ports at 200
-    [for i in range(local.ai_leaf_medium_200_server_port_count) :
-      {
-        logical_device_port     = "1/${local.ai_leaf_medium_200_server_ld_port_first + i}"                          // 1/33 through 1/64
-        physical_interface_name = "et-0/0/${local.ai_leaf_medium_200_server_dp_port_first + floor(i / 2)}:${i % 2}" // et-0/0/32:0 through et-0/0/47:1
-      }
-    ],
-   // the server ports at 400
-    [for i in range(local.ai_leaf_medium_400_server_port_count) :
-      {
-        logical_device_port     = "1/${local.ai_leaf_medium_400_server_ld_port_first + i}"                 // 1/64 through 1/80
-        physical_interface_name = "et-0/0/${local.ai_leaf_medium_400_server_dp_port_first + i}" // et-0/0/48 through et-0/0/63
-      }
-    ],
-  ])
-}
-
-
-locals {
-  ai_leaf_16x400_32x200_spine_port_count    = apstra_logical_device.AI-Leaf_Small_200.panels[0].port_groups[0].port_count // the "spine" port group has a count of 16
-  ai_leaf_16x400_32x200_spine_ld_port_first = 1                                                                               // first logical device "spine" port is 1/1
-  ai_leaf_16x400_32x200_spine_dp_port_first = 0                                                                               // first physical device "spine" port is et-0/0/0
-
-  ai_leaf_16x400_32x200_server_port_count    = apstra_logical_device.AI-Leaf_Small_200.panels[0].port_groups[1].port_count                // the "server" port group has a count of 32
-  ai_leaf_16x400_32x200_server_ld_port_first = local.ai_leaf_16x400_32x200_spine_ld_port_first + local.ai_leaf_16x400_32x200_spine_port_count // first logical device "server" port is 1/17
-  ai_leaf_16x400_32x200_server_dp_port_first = local.ai_leaf_16x400_32x200_spine_dp_port_first + local.ai_leaf_16x400_32x200_spine_port_count // first physical device "server" port is et-0/0/16
-}
-
-resource "apstra_interface_map" "AI-Leaf_16x400_32x200" {
-  name              = "${apstra_logical_device.AI-Leaf_Small_200.name}__QFX5220-32CD"
-  logical_device_id = apstra_logical_device.AI-Leaf_Small_200.id
-  device_profile_id = "Juniper_QFX5220-32CD_Junos"
-  interfaces = flatten([
-    // the spine ports
-    [for i in range(local.ai_leaf_16x400_32x200_spine_port_count) :
-      {
-        logical_device_port     = "1/${local.ai_leaf_16x400_32x200_spine_ld_port_first + i}"      // 1/1 through 1/16
-        physical_interface_name = "et-0/0/${local.ai_leaf_16x400_32x200_spine_dp_port_first + i}" // et-0/0/0 through et-0/0/15
-      }
-    ],
-    // the server ports
-    [for i in range(local.ai_leaf_16x400_32x200_server_port_count) :
-      {
-        logical_device_port     = "1/${local.ai_leaf_16x400_32x200_server_ld_port_first + i}"                          // 1/17 through 1/48
-        physical_interface_name = "et-0/0/${local.ai_leaf_16x400_32x200_server_dp_port_first + floor(i / 2)}:${i % 2}" // et-0/0/16:0 through et-0/0/31:1
-      }
-    ],
-  ])
-}
-
-
-locals {
-  ai_leaf_16x400_64x100_spine_port_count    = apstra_logical_device.AI-Leaf_16x400_64x100.panels[0].port_groups[0].port_count // the "spine" port group has a count of 16
-  ai_leaf_16x400_64x100_spine_ld_port_first = 1                                                                               // first logical device "spine" port is 1/1
-  ai_leaf_16x400_64x100_spine_dp_port_first = 0                                                                               // first physical device "spine" port is et-0/0/0
-
-  ai_leaf_16x400_64x100_server_port_count    = apstra_logical_device.AI-Leaf_16x400_64x100.panels[0].port_groups[1].port_count                // the "server" port group has a count of 64
-  ai_leaf_16x400_64x100_server_ld_port_first = local.ai_leaf_16x400_64x100_spine_ld_port_first + local.ai_leaf_16x400_64x100_spine_port_count // first logical device "server" port is 1/17
-  ai_leaf_16x400_64x100_server_dp_port_first = local.ai_leaf_16x400_64x100_spine_dp_port_first + local.ai_leaf_16x400_64x100_spine_port_count // first physical device "server" port is et-0/0/16
-}
-
-resource "apstra_interface_map" "AI-Leaf_16x400_64x100" {
-  name              = "${apstra_logical_device.AI-Leaf_16x400_64x100.name}__QFX5220-32CD"
-  logical_device_id = apstra_logical_device.AI-Leaf_16x400_64x100.id
-  device_profile_id = "Juniper_QFX5220-32CD_Junos"
-  interfaces = flatten([
-    // the spine ports
-    [for i in range(local.ai_leaf_16x400_64x100_spine_port_count) :
-      {
-        logical_device_port     = "1/${local.ai_leaf_16x400_64x100_spine_ld_port_first + i}"      // 1/1 through 1/16
-        physical_interface_name = "et-0/0/${local.ai_leaf_16x400_64x100_spine_dp_port_first + i}" // et-0/0/0 through et-0/0/15
-      }
-    ],
-    // the server ports
-    [for i in range(local.ai_leaf_16x400_64x100_server_port_count) :
-      {
-        logical_device_port     = "1/${local.ai_leaf_16x400_64x100_server_ld_port_first + i}"                          // 1/17 through 1/48
-        physical_interface_name = "et-0/0/${local.ai_leaf_16x400_64x100_server_dp_port_first + floor(i / 4)}:${i % 4}" // et-0/0/16:0 through et-0/0/31:3
-      }
-    ],
-  ])
-}
-
-locals {
-  ai_spine_32x400_port_count    = apstra_logical_device.AI-Spine_32x400.panels[0].port_groups[0].port_count // the port group has a count of 32
-  ai_spine_32x400_ld_port_first = 1                                                                         // first logical device "spine" port is 1/1
-  ai_spine_32x400_dp_port_first = 0                                                                         // first physical device "spine" port is et-0/0/0
-}
-
-resource "apstra_interface_map" "AI-Spine_32x400" {
-  name              = "${apstra_logical_device.AI-Spine_32x400.name}__QFX5220-32CD"
-  logical_device_id = apstra_logical_device.AI-Spine_32x400.id
-  device_profile_id = "Juniper_QFX5220-32CD_Junos"
-  interfaces = flatten([
-    // the spine ports
-    [for i in range(local.ai_spine_32x400_port_count) :
-      {
-        logical_device_port     = "1/${local.ai_spine_32x400_ld_port_first + i}"      // 1/1 through 1/32
-        physical_interface_name = "et-0/0/${local.ai_spine_32x400_dp_port_first + i}" // et-0/0/0 through et-0/0/31
-      }
-    ],
-  ])
-}
-
-locals {
-  ai_spine_64x400_port_count    = apstra_logical_device.AI-Spine_64x400.panels[0].port_groups[0].port_count // the port group has a count of 64
-  ai_spine_64x400_ld_port_first = 1                                                                         // first logical device "spine" port is 1/1
-  ai_spine_64x400_dp_port_first = 0                                                                         // first physical device "spine" port is et-0/0/0
-}
-
-resource "apstra_interface_map" "AI-Spine_64x400" {
-  name              = "${apstra_logical_device.AI-Spine_64x400.name}__QFX5230-64CD"
-  logical_device_id = apstra_logical_device.AI-Spine_64x400.id
-  device_profile_id = "Juniper_QFX5230-64CD_Junos"
-  interfaces = flatten([
-    // the spine ports
-    [for i in range(local.ai_spine_64x400_port_count) :
-      {
-        logical_device_port     = "1/${local.ai_spine_64x400_ld_port_first + i}"      // 1/1 through 1/64
-        physical_interface_name = "et-0/0/${local.ai_spine_64x400_dp_port_first + i}" // et-0/0/0 through et-0/0/63
-      }
-    ],
-  ])
 }
