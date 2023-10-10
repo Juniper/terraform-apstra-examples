@@ -5,7 +5,7 @@
 
 locals {
   configlet = {
-    name = "DCQCN"
+    name = "dcqcn"
     generators = [
       {
         config_style  = "junos"
@@ -139,7 +139,7 @@ class-of-service {
   }
 }
 # Create Catalog Configlet
-resource "apstra_configlet" "DCQCN" {
+resource "apstra_configlet" "dcqcn" {
   name       = local.configlet.name
   generators = local.configlet.generators
 }
