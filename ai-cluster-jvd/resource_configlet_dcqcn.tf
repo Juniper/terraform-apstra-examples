@@ -5,7 +5,7 @@
 
 locals {
   configlet = {
-    name = "dcqcn"
+    name = "DCQCN"
     generators = [
       {
         config_style  = "junos"

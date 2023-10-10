@@ -61,7 +61,7 @@
 
 locals {
   cfg_data = {
-    name = "dlb"
+    name = "DLB"
     generators = [
       {
         config_style  = "junos"
