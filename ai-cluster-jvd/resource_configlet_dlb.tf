@@ -91,7 +91,7 @@ locals {
   }
 }
 # Create Catalog Configlet
-resource "apstra_configlet" "DLB" {
+resource "apstra_configlet" "dlb" {
   name       = local.cfg_data.name
   generators = local.cfg_data.generators
 }
