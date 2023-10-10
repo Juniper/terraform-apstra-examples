@@ -114,7 +114,7 @@ resource "apstra_datacenter_device_allocation" "gpus_spines" {
 resource "apstra_datacenter_device_allocation" "frontend-leafs1" {
   blueprint_id             = apstra_datacenter_blueprint.mgmt_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_64x100.id
-  node_name                = format("%s_001_leaf1", replace(lower(apstra_rack_type.Frontend-Mgmt-AI.name), "-", "_"))
+  node_name                = format("%s_001_leaf1", replace(lower(apstra_rack_type.frontend_mgmt_ai.name), "-", "_"))
   deploy_mode              = "deploy"
 }
 
@@ -129,7 +129,7 @@ resource "apstra_datacenter_device_allocation" "storage-leafs1" {
   count                    = 2
   blueprint_id             = apstra_datacenter_blueprint.storage_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_32x200.id
-  node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.Storage-AI.name), "-", "_"), count.index + 1)
+  node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.storage_ai.name), "-", "_"), count.index + 1)
   deploy_mode              = "deploy"
 }
 
@@ -137,7 +137,7 @@ resource "apstra_datacenter_device_allocation" "storage_leafs2" {
   count                    = 2
   blueprint_id             = apstra_datacenter_blueprint.storage_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_32x200.id
-  node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.Storage-Weka.name), "-", "_"), count.index + 1)
+  node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.storage_weka.name), "-", "_"), count.index + 1)
   deploy_mode              = "deploy"
 }
 
@@ -145,7 +145,7 @@ resource "apstra_datacenter_device_allocation" "gpu_leafs1" {
   count                    = 8
   blueprint_id             = apstra_datacenter_blueprint.gpu_bp.id
   initial_interface_map_id = apstra_interface_map.ai_lab_leaf_small.id
-  node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu-backend_sml.name), "-", "_"), count.index + 1)
+  node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_sml.name), "-", "_"), count.index + 1)
   deploy_mode              = "deploy"
 }
 
@@ -153,7 +153,7 @@ resource "apstra_datacenter_device_allocation" "gpu_leafs2" {
   count                    = 8
   blueprint_id             = apstra_datacenter_blueprint.gpu_bp.id
   initial_interface_map_id = apstra_interface_map.ai_lab_leaf_medium.id
-  node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu-backend_med.name), "-", "_"), count.index + 1)
+  node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_med.name), "-", "_"), count.index + 1)
   deploy_mode              = "deploy"
 }
 
@@ -166,12 +166,12 @@ resource "apstra_datacenter_device_allocation" "gpu_leafs2" {
 
 resource "apstra_datacenter_configlet" "dlb_gpu" {
   blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
-  catalog_configlet_id = apstra_configlet.DLB.id
+  catalog_configlet_id = apstra_configlet.dlb.id
   condition            = var.all_qfx_backend ? "role in [\"leaf\", \"spine\"]" : "role in [\"leaf\"]"
 }
 
 resource "apstra_datacenter_configlet" "dlb_storage" {
   blueprint_id         = apstra_datacenter_blueprint.storage_bp.id
-  catalog_configlet_id = apstra_configlet.DLB.id
+  catalog_configlet_id = apstra_configlet.dlb.id
   condition            = "role in [\"leaf\", \"spine\"]"
 }

@@ -448,7 +448,7 @@ locals {
 #
 # Small rack/stripe uses the 5220 (32x400) switch
 #
-resource "apstra_rack_type" "gpu-backend_sml" {
+resource "apstra_rack_type" "gpu_backend_sml" {
   name                       = "GPU-Backend-Sml"
   description                = "AI Rail-optimized Rack Group of up to 16 H100-based or 32 A100-based Servers. 2 spine uplinks"
   fabric_connectivity_design = "l3clos"
@@ -476,7 +476,7 @@ resource "apstra_rack_type" "gpu-backend_sml" {
 #
 # Medium rack/stripe uses the 5230 (64x400) switch
 #
-resource "apstra_rack_type" "gpu-backend_med" {
+resource "apstra_rack_type" "gpu_backend_med" {
   name                       = "GPU-Backend-Med"
   description                = "AI Rail-optimized Rack Group of up to 32 H100-based or 64 A100-based Servers. 2 spine uplinks"
   fabric_connectivity_design = "l3clos"
@@ -522,7 +522,7 @@ locals {
 }
 
 
-resource "apstra_rack_type" "Storage-AI" {
+resource "apstra_rack_type" "storage_ai" {
   name                       = "Storage-Ports-AI"
   description                = "Rack of the HGX and DGX storage ports"
   fabric_connectivity_design = "l3clos"
@@ -584,7 +584,7 @@ locals {
   }
 }
 
-resource "apstra_rack_type" "Storage-Weka" {
+resource "apstra_rack_type" "storage_weka" {
   name                       = "Storage-Weka"
   description                = "Rack of the Weka server storage ports"
   fabric_connectivity_design = "l3clos"
@@ -613,7 +613,7 @@ locals {
   }
 }
 
-resource "apstra_rack_type" "Frontend-Mgmt-AI" {
+resource "apstra_rack_type" "frontend_mgmt_ai" {
   name                       = "Frontend-AI"
   description                = "Rack of the AI server management ports"
   fabric_connectivity_design = "l3clos"
@@ -690,14 +690,14 @@ resource "apstra_template_rack_based" "ai_cluster_gpus_large" {
     logical_device_id = apstra_logical_device.ai_spine_72x400.id
   }
   rack_infos = {
-    (apstra_rack_type.GPU-Backend_Sml.id) = { count = 1 }
-    (apstra_rack_type.GPU-Backend_Med.id) = { count = 1 }
+    (apstra_rack_type.gpu_backend_sml.id) = { count = 1 }
+    (apstra_rack_type.gpu_backend_med.id) = { count = 1 }
   }
   lifecycle {
     replace_triggered_by = [
       apstra_logical_device.ai_spine_72x400,
-      apstra_rack_type.gpu-backend_sml,
-      apstra_rack_type.gpu-backend_med,
+      apstra_rack_type.gpu_backend_sml,
+      apstra_rack_type.gpu_backend_med,
     ]
   }
 }
@@ -716,14 +716,14 @@ resource "apstra_template_rack_based" "ai_cluster_gpus_medium" {
     logical_device_id = apstra_logical_device.ai_spine_64x400.id
   }
   rack_infos = {
-    (apstra_rack_type.GPU-Backend_Sml.id) = { count = 1 }
-    (apstra_rack_type.GPU-Backend_Med.id) = { count = 1 }
+    (apstra_rack_type.gpu_backend_sml.id) = { count = 1 }
+    (apstra_rack_type.gpu_backend_med.id) = { count = 1 }
   }
   lifecycle {
     replace_triggered_by = [
       apstra_logical_device.ai_spine_64x400,
-      apstra_rack_type.gpu-backend_sml,
-      apstra_rack_type.gpu-backend_med,
+      apstra_rack_type.gpu_backend_sml,
+      apstra_rack_type.gpu_backend_med,
     ]
   }
 }
@@ -737,14 +737,14 @@ resource "apstra_template_rack_based" "ai_cluster_storage" {
     logical_device_id = apstra_logical_device.ai_spine_32x400.id
   }
   rack_infos = {
-    (apstra_rack_type.Storage-AI.id)   = { count = 1 }
-    (apstra_rack_type.Storage-Weka.id) = { count = 1 }
+    (apstra_rack_type.storage_ai.id)   = { count = 1 }
+    (apstra_rack_type.storage_weka.id) = { count = 1 }
   }
   lifecycle {
     replace_triggered_by = [
       apstra_logical_device.ai_spine_32x400,
-      apstra_rack_type.Storage-AI,
-      apstra_rack_type.Storage-Weka,
+      apstra_rack_type.storage_ai,
+      apstra_rack_type.storage_weka,
     ]
   }
 }
@@ -758,13 +758,13 @@ resource "apstra_template_rack_based" "ai_cluster_mgmt" {
     logical_device_id = apstra_logical_device.ai_spine_32x400.id
   }
   rack_infos = {
-    (apstra_rack_type.Frontend-Mgmt-AI.id)   = { count = 1 }
-    (apstra_rack_type.Frontend-Mgmt-Weka.id) = { count = 1 }
+    (apstra_rack_type.frontend_mgmt_ai.id)   = { count = 1 }
+    (apstra_rack_type.frontend_mgmt_weka.id) = { count = 1 }
   }
   lifecycle {
     replace_triggered_by = [
       apstra_logical_device.ai_spine_32x400,
-      apstra_rack_type.Frontend-Mgmt-AI,
+      apstra_rack_type.frontend_mgmt_ai,
       apstra_rack_type.frontend_mgmt_weka,
     ]
   }
