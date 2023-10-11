@@ -3,7 +3,7 @@
 # Design elements in sequence of LDs, then racks, then templates
 
 # LD for the Juniper QFX5220 (aka Small leaf)
-resource "apstra_logical_device" "AI-Spine_32x400" {
+resource "apstra_logical_device" "ai_spine_32x400" {
   name = "AI-Spine 32x400"
   panels = [
     {
@@ -20,7 +20,7 @@ resource "apstra_logical_device" "AI-Spine_32x400" {
   ]
 }
 
-resource "apstra_logical_device" "AI-Leaf_Small_400" {
+resource "apstra_logical_device" "ai_leaf_small_400" {
   name = "AI-Leaf Small 16x400 and 16x400"
   panels = [
     {
@@ -42,7 +42,7 @@ resource "apstra_logical_device" "AI-Leaf_Small_400" {
   ]
 }
 
-resource "apstra_logical_device" "AI-Leaf_Small_200" {
+resource "apstra_logical_device" "ai_leaf_small_200" {
   name = "AI-Leaf Small 16x400 and 32x200"
   panels = [
     {
@@ -69,7 +69,7 @@ resource "apstra_logical_device" "AI-Leaf_Small_200" {
 # The JVD example will mix 4 A100 servers and 2 H100 servers in the same stripe, so we will
 # divide the access ports to half 200 half 400. No oversubscription (spine uplinks) will
 #  be based on the actual number of servers in use in the rack
-resource "apstra_logical_device" "AI-LabLeaf_Small" {
+resource "apstra_logical_device" "ai_lab_leaf_small" {
   name = "AI-LabLeaf Small 16x400, 16x200 and 8x400"
   panels = [
     {
@@ -97,7 +97,7 @@ resource "apstra_logical_device" "AI-LabLeaf_Small" {
 }
 
 # For frontend 100G access
-resource "apstra_logical_device" "AI-Leaf_16x400_64x100" {
+resource "apstra_logical_device" "ai_leaf_16x400_64x100" {
   name = "AI-Leaf Front 16x400G and 64x100G"
   panels = [
     {
@@ -120,7 +120,7 @@ resource "apstra_logical_device" "AI-Leaf_16x400_64x100" {
 }
 
 # LD for the Juniper QFX5230 (aka Medium leaf)
-resource "apstra_logical_device" "AI-Spine_64x400" {
+resource "apstra_logical_device" "ai_spine_64x400" {
   name = "AI-Spine 64x400"
   panels = [
     {
@@ -137,7 +137,7 @@ resource "apstra_logical_device" "AI-Spine_64x400" {
   ]
 }
 
-resource "apstra_logical_device" "AI-Leaf_Medium_32" {
+resource "apstra_logical_device" "ai_leaf_medium_32" {
   name = "AI-Leaf Medium 32x400 and 32x200"
   panels = [
     {
@@ -159,7 +159,7 @@ resource "apstra_logical_device" "AI-Leaf_Medium_32" {
   ]
 }
 
-resource "apstra_logical_device" "AI-Leaf_Medium_64" {
+resource "apstra_logical_device" "ai_leaf_medium_64" {
   name = "AI-Leaf Medium 32x400 and 64x200"
   panels = [
     {
@@ -185,7 +185,7 @@ resource "apstra_logical_device" "AI-Leaf_Medium_64" {
 # The JVD example will mix 4 A100 servers and 2 H100 servers in the same stripe, so we will
 # divide the access ports to half 200 half 400. No oversubscription (spine uplinks) will
 #  be based on the actual number of servers in use in the rack
-resource "apstra_logical_device" "AI-LabLeaf_Medium" {
+resource "apstra_logical_device" "ai_lab_leaf_medium" {
   name = "AI-LabLeaf Medium 32x400, 32x200 and 16x400"
   panels = [
     {
@@ -234,7 +234,7 @@ locals {
   }
 }
 
-resource "apstra_logical_device" "AI-Spine_288x400" {
+resource "apstra_logical_device" "ai_spine_288x400" {
   name   = "AI-Spine 288x400"
   panels = [for i in range(local.ptx_card_count) : local.ptx_card_definition]
 }
@@ -257,7 +257,7 @@ locals {
   }
 }
 
-resource "apstra_logical_device" "AI-Spine_72x400" {
+resource "apstra_logical_device" "ai_spine_72x400" {
   name   = "AI-Spine 72x400"
   panels = [for i in range(local.ptx_lab_card_count) : local.ptx_lab_card_definition]
 }
@@ -271,7 +271,7 @@ resource "apstra_logical_device" "AI-Spine_72x400" {
 # Storage Networking: 1x 200 GbE NVIDIA ConnectX-6 VPI NIC: Dual-port QSFP56
 # GPUDirect RDMA Networking: 8x NVIDIA ConnectX-7 Adapter Card 200GbE Single-port QSFP PCIe 4.0 x16
 
-resource "apstra_logical_device" "A100-Mgmt_1x100G" {
+resource "apstra_logical_device" "a100_mgmt_1x100g" {
   name = "A100 Server Mgmt 1x100G"
   panels = [
     {
@@ -288,7 +288,7 @@ resource "apstra_logical_device" "A100-Mgmt_1x100G" {
   ]
 }
 
-resource "apstra_logical_device" "A100-Storage_1x200G" {
+resource "apstra_logical_device" "a100_storage_1x200g" {
   name = "A100 Server Storage 1x200G"
   panels = [
     {
@@ -305,7 +305,7 @@ resource "apstra_logical_device" "A100-Storage_1x200G" {
   ]
 }
 
-resource "apstra_logical_device" "A100-GPU_8x200G" {
+resource "apstra_logical_device" "a100_gpu_8x200g" {
   name = "A100 Server GPU 8x200G"
   panels = [
     {
@@ -328,7 +328,7 @@ resource "apstra_logical_device" "A100-GPU_8x200G" {
 # Storage Networking: 2x QSPF112 400 Gb/s InfiniBand/Ethernet, 
 # GPUDirect RDMA Networking: 4x OSFP ports serving 8x single-port NVIDIA ConnectX-7 VPI 400 Gb/s InfiniBand/Ethernet
 
-resource "apstra_logical_device" "H100-Mgmt_1x100G" {
+resource "apstra_logical_device" "h100_mgmt_1x100g" {
   name = "H100 Server Mgmt 1x100G"
   panels = [
     {
@@ -345,7 +345,7 @@ resource "apstra_logical_device" "H100-Mgmt_1x100G" {
   ]
 }
 
-resource "apstra_logical_device" "H100-Storage_2x400G" {
+resource "apstra_logical_device" "h100_storage_2x400g" {
   name = "H100 Server Storage 2x400G"
   panels = [
     {
@@ -362,7 +362,7 @@ resource "apstra_logical_device" "H100-Storage_2x400G" {
   ]
 }
 
-resource "apstra_logical_device" "H100-GPU_8x400G" {
+resource "apstra_logical_device" "h100-gpu_8x400g" {
   name = "H100 Server GPU 8x200G"
   panels = [
     {
@@ -385,7 +385,7 @@ resource "apstra_logical_device" "H100-GPU_8x400G" {
 # Standard networking: 1x NVIDIA ConnectX-6 Dx adapter card, 100GbE, dual-port QSFP28, PCIe 4.0 x16
 # Storage Networking: 2x NVIDIA ConnectX-6 VPI adapter card, 200GbE, dual-port QSFP56, OCP 3.0
 
-resource "apstra_logical_device" "Weka-Mgmt_1x100G" {
+resource "apstra_logical_device" "weka_mgmt_1x100g" {
   name = "Weka Server Mgmt 1x100G"
   panels = [
     {
@@ -402,7 +402,7 @@ resource "apstra_logical_device" "Weka-Mgmt_1x100G" {
   ]
 }
 
-resource "apstra_logical_device" "Weka-Storage_2x200G" {
+resource "apstra_logical_device" "weka-storage_2x200g" {
   name = "Weka Server Storage 2x200G"
   panels = [
     {
@@ -434,12 +434,12 @@ resource "apstra_logical_device" "Weka-Storage_2x200G" {
 locals {
   backend_rack_leaf_count = 8
   backend_rack_leaf_definition_1 = {
-    logical_device_id = apstra_logical_device.AI-LabLeaf_Small.id # with 5220
+    logical_device_id = apstra_logical_device.ai_lab_leaf_small.id # with 5220
     spine_link_count  = 2
     spine_link_speed  = "400G"
   }
   backend_rack_leaf_definition_2 = {
-    logical_device_id = apstra_logical_device.AI-LabLeaf_Medium.id # with 5230
+    logical_device_id = apstra_logical_device.ai_lab_leaf_medium.id # with 5230
     spine_link_count  = 2
     spine_link_speed  = "400G"
   }
@@ -448,23 +448,23 @@ locals {
 #
 # Small rack/stripe uses the 5220 (32x400) switch
 #
-resource "apstra_rack_type" "GPU-Backend_Sml" {
+resource "apstra_rack_type" "gpu_backend_sml" {
   name                       = "GPU-Backend-Sml"
   description                = "AI Rail-optimized Rack Group of up to 16 H100-based or 32 A100-based Servers. 2 spine uplinks"
   fabric_connectivity_design = "l3clos"
   leaf_switches              = { for i in range(local.backend_rack_leaf_count) : "Leaf${i + 1}" => local.backend_rack_leaf_definition_1 }
   generic_systems = {
-    DGX-H100 = {
+    dgx_h100 = {
       count             = 2
-      logical_device_id = apstra_logical_device.H100-GPU_8x400G.id
+      logical_device_id = apstra_logical_device.h100-gpu_8x400g.id
       links = { for i in range(local.backend_rack_leaf_count) : "link${i + 1}" => {
         speed              = "400G"
         target_switch_name = "Leaf${i + 1}"
       } }
     },
-    HGX-A100 = {
+    hgx_a100 = {
       count             = 4
-      logical_device_id = apstra_logical_device.A100-GPU_8x200G.id
+      logical_device_id = apstra_logical_device.a100_gpu_8x200g.id
       links = { for i in range(local.backend_rack_leaf_count) : "link${i + 1}" => {
         speed              = "200G"
         target_switch_name = "Leaf${i + 1}"
@@ -476,23 +476,23 @@ resource "apstra_rack_type" "GPU-Backend_Sml" {
 #
 # Medium rack/stripe uses the 5230 (64x400) switch
 #
-resource "apstra_rack_type" "GPU-Backend_Med" {
+resource "apstra_rack_type" "gpu_backend_med" {
   name                       = "GPU-Backend-Med"
   description                = "AI Rail-optimized Rack Group of up to 32 H100-based or 64 A100-based Servers. 2 spine uplinks"
   fabric_connectivity_design = "l3clos"
   leaf_switches              = { for i in range(local.backend_rack_leaf_count) : "Leaf${i + 1}" => local.backend_rack_leaf_definition_2 }
   generic_systems = {
-    DGX-H100 = {
+    dgx_h100 = {
       count             = 2
-      logical_device_id = apstra_logical_device.H100-GPU_8x400G.id
+      logical_device_id = apstra_logical_device.h100-gpu_8x400g.id
       links = { for i in range(local.backend_rack_leaf_count) : "link${i + 1}" => {
         speed              = "400G"
         target_switch_name = "Leaf${i + 1}"
       } }
     },
-    HGX-A100 = {
+    hgx_a100 = {
       count             = 4
-      logical_device_id = apstra_logical_device.A100-GPU_8x200G.id
+      logical_device_id = apstra_logical_device.a100_gpu_8x200g.id
       links = { for i in range(local.backend_rack_leaf_count) : "link${i + 1}" => {
         speed              = "200G"
         target_switch_name = "Leaf${i + 1}"
@@ -515,14 +515,14 @@ resource "apstra_rack_type" "GPU-Backend_Med" {
 locals {
   storage_rack_leaf_count = 2
   storage_rack_leaf_definition = {
-    logical_device_id = apstra_logical_device.AI-Leaf_Small_200.id
+    logical_device_id = apstra_logical_device.ai_leaf_small_200.id
     spine_link_count  = 3
     spine_link_speed  = "400G"
   }
 }
 
 
-resource "apstra_rack_type" "Storage-AI" {
+resource "apstra_rack_type" "storage_ai" {
   name                       = "Storage-Ports-AI"
   description                = "Rack of the HGX and DGX storage ports"
   fabric_connectivity_design = "l3clos"
@@ -530,7 +530,7 @@ resource "apstra_rack_type" "Storage-AI" {
   generic_systems = {
     DGX-H100-Storage = {
       count             = 4
-      logical_device_id = apstra_logical_device.H100-Storage_2x400G.id
+      logical_device_id = apstra_logical_device.h100_storage_2x400g.id
       links = {
         link1 = {
           speed              = "400G"
@@ -544,7 +544,7 @@ resource "apstra_rack_type" "Storage-AI" {
     },
     HGX-A100-Storage-1 = {
       count             = 4
-      logical_device_id = apstra_logical_device.A100-Storage_1x200G.id
+      logical_device_id = apstra_logical_device.a100_storage_1x200g.id
       links = {
         link1 = {
           speed              = "200G"
@@ -554,7 +554,7 @@ resource "apstra_rack_type" "Storage-AI" {
     },
     HGX-A100-Storage-2 = {
       count             = 4
-      logical_device_id = apstra_logical_device.A100-Storage_1x200G.id
+      logical_device_id = apstra_logical_device.a100_storage_1x200g.id
       links = {
         link1 = {
           speed              = "200G"
@@ -576,15 +576,15 @@ resource "apstra_rack_type" "Storage-AI" {
 #
 
 locals {
-  storage_weka_rack_leaf_count      = 2
+  storage_weka_rack_leaf_count = 2
   storage_weka_rack_leaf_definition = {
-    logical_device_id = apstra_logical_device.AI-Leaf_Small_200.id # with 5220
+    logical_device_id = apstra_logical_device.ai_leaf_small_200.id # with 5220
     spine_link_count  = 2
     spine_link_speed  = "400G"
   }
 }
 
-resource "apstra_rack_type" "Storage-Weka" {
+resource "apstra_rack_type" "storage_weka" {
   name                       = "Storage-Weka"
   description                = "Rack of the Weka server storage ports"
   fabric_connectivity_design = "l3clos"
@@ -592,7 +592,7 @@ resource "apstra_rack_type" "Storage-Weka" {
   generic_systems = {
     Weka-Storage = {
       count             = 8
-      logical_device_id = apstra_logical_device.Weka-Storage_2x200G.id
+      logical_device_id = apstra_logical_device.weka-storage_2x200g.id
       links = { for i in range(local.storage_weka_rack_leaf_count) : "link${i + 1}" => {
         speed              = "200G"
         target_switch_name = "Leaf${i + 1}"
@@ -607,13 +607,13 @@ resource "apstra_rack_type" "Storage-Weka" {
 
 locals {
   frontend_leaf_definition = {
-    logical_device_id = apstra_logical_device.AI-Leaf_16x400_64x100.id
+    logical_device_id = apstra_logical_device.ai_leaf_16x400_64x100.id
     spine_link_count  = 2
     spine_link_speed  = "400G"
   }
 }
 
-resource "apstra_rack_type" "Frontend-Mgmt-AI" {
+resource "apstra_rack_type" "frontend_mgmt_ai" {
   name                       = "Frontend-AI"
   description                = "Rack of the AI server management ports"
   fabric_connectivity_design = "l3clos"
@@ -623,7 +623,7 @@ resource "apstra_rack_type" "Frontend-Mgmt-AI" {
   generic_systems = {
     HGX-Mgmt = {
       count             = 8
-      logical_device_id = apstra_logical_device.A100-Mgmt_1x100G.id
+      logical_device_id = apstra_logical_device.a100_mgmt_1x100g.id
       links = {
         link1 = {
           speed              = "100G"
@@ -633,7 +633,7 @@ resource "apstra_rack_type" "Frontend-Mgmt-AI" {
     },
     DGX-Mgmt = {
       count             = 4
-      logical_device_id = apstra_logical_device.H100-Mgmt_1x100G.id
+      logical_device_id = apstra_logical_device.h100_mgmt_1x100g.id
       links = {
         link1 = {
           speed              = "100G"
@@ -648,7 +648,7 @@ resource "apstra_rack_type" "Frontend-Mgmt-AI" {
 # Rack for the management ports from the Weka servers
 #
 
-resource "apstra_rack_type" "Frontend-Mgmt-Weka" {
+resource "apstra_rack_type" "frontend_mgmt_weka" {
   name                       = "Frontend-Weka"
   description                = "Rack of the Weka server management ports"
   fabric_connectivity_design = "l3clos"
@@ -658,7 +658,7 @@ resource "apstra_rack_type" "Frontend-Mgmt-Weka" {
   generic_systems = {
     Weka-Storage = {
       count             = 8
-      logical_device_id = apstra_logical_device.Weka-Mgmt_1x100G.id
+      logical_device_id = apstra_logical_device.weka_mgmt_1x100g.id
       links = {
         link1 = {
           speed              = "100G"
@@ -681,23 +681,23 @@ resource "apstra_rack_type" "Frontend-Mgmt-Weka" {
 # Larger could be PTX10016 or (future) 800G line cards
 # Adjust racks as needed for scale. This example is with one stripe of 5220s and one of 5230s
 
-resource "apstra_template_rack_based" "AI_Cluster_GPUs_Large" {
+resource "apstra_template_rack_based" "ai_cluster_gpus_large" {
   name                     = "AI Cluster GPU Fabric - Large"
   asn_allocation_scheme    = "unique"
   overlay_control_protocol = "static"
   spine = {
     count             = 2
-    logical_device_id = apstra_logical_device.AI-Spine_72x400.id
+    logical_device_id = apstra_logical_device.ai_spine_72x400.id
   }
   rack_infos = {
-    (apstra_rack_type.GPU-Backend_Sml.id) = { count = 1 }
-    (apstra_rack_type.GPU-Backend_Med.id) = { count = 1 }
+    (apstra_rack_type.gpu_backend_sml.id) = { count = 1 }
+    (apstra_rack_type.gpu_backend_med.id) = { count = 1 }
   }
   lifecycle {
     replace_triggered_by = [
-      apstra_logical_device.AI-Spine_72x400,
-      apstra_rack_type.GPU-Backend_Sml,
-      apstra_rack_type.GPU-Backend_Med,
+      apstra_logical_device.ai_spine_72x400,
+      apstra_rack_type.gpu_backend_sml,
+      apstra_rack_type.gpu_backend_med,
     ]
   }
 }
@@ -707,65 +707,65 @@ resource "apstra_template_rack_based" "AI_Cluster_GPUs_Large" {
 # Smaller would be 5220 (32x400G), and (future) larger 5240 (64x800G)
 # Adjust racks as needed for scale. This example is with one stripe of 5220s and one of 5230s
 
-resource "apstra_template_rack_based" "AI_Cluster_GPUs_Medium" {
+resource "apstra_template_rack_based" "ai_cluster_gpus_medium" {
   name                     = "AI Cluster GPU Fabric - Medium"
   asn_allocation_scheme    = "unique"
   overlay_control_protocol = "static"
   spine = {
     count             = 2
-    logical_device_id = apstra_logical_device.AI-Spine_64x400.id
+    logical_device_id = apstra_logical_device.ai_spine_64x400.id
   }
   rack_infos = {
-    (apstra_rack_type.GPU-Backend_Sml.id) = { count = 1 }
-    (apstra_rack_type.GPU-Backend_Med.id) = { count = 1 }
+    (apstra_rack_type.gpu_backend_sml.id) = { count = 1 }
+    (apstra_rack_type.gpu_backend_med.id) = { count = 1 }
   }
   lifecycle {
     replace_triggered_by = [
-      apstra_logical_device.AI-Spine_64x400,
-      apstra_rack_type.GPU-Backend_Sml,
-      apstra_rack_type.GPU-Backend_Med,
+      apstra_logical_device.ai_spine_64x400,
+      apstra_rack_type.gpu_backend_sml,
+      apstra_rack_type.gpu_backend_med,
     ]
   }
 }
 
-resource "apstra_template_rack_based" "AI_Cluster_Storage" {
+resource "apstra_template_rack_based" "ai_cluster_storage" {
   name                     = "AI Cluster Storage Fabric"
   asn_allocation_scheme    = "unique"
   overlay_control_protocol = "static"
   spine = {
     count             = 2
-    logical_device_id = apstra_logical_device.AI-Spine_32x400.id
+    logical_device_id = apstra_logical_device.ai_spine_32x400.id
   }
   rack_infos = {
-    (apstra_rack_type.Storage-AI.id)   = { count = 1 }
-    (apstra_rack_type.Storage-Weka.id) = { count = 1 }
+    (apstra_rack_type.storage_ai.id)   = { count = 1 }
+    (apstra_rack_type.storage_weka.id) = { count = 1 }
   }
   lifecycle {
     replace_triggered_by = [
-      apstra_logical_device.AI-Spine_32x400,
-      apstra_rack_type.Storage-AI,
-      apstra_rack_type.Storage-Weka,
+      apstra_logical_device.ai_spine_32x400,
+      apstra_rack_type.storage_ai,
+      apstra_rack_type.storage_weka,
     ]
   }
 }
 
-resource "apstra_template_rack_based" "AI_Cluster_Mgmt" {
+resource "apstra_template_rack_based" "ai_cluster_mgmt" {
   name                     = "AI Cluster Management Fabric"
   asn_allocation_scheme    = "unique"
   overlay_control_protocol = "static"
   spine = {
     count             = 2
-    logical_device_id = apstra_logical_device.AI-Spine_32x400.id
+    logical_device_id = apstra_logical_device.ai_spine_32x400.id
   }
   rack_infos = {
-    (apstra_rack_type.Frontend-Mgmt-AI.id)   = { count = 1 }
-    (apstra_rack_type.Frontend-Mgmt-Weka.id) = { count = 1 }
+    (apstra_rack_type.frontend_mgmt_ai.id)   = { count = 1 }
+    (apstra_rack_type.frontend_mgmt_weka.id) = { count = 1 }
   }
   lifecycle {
     replace_triggered_by = [
-      apstra_logical_device.AI-Spine_32x400,
-      apstra_rack_type.Frontend-Mgmt-AI,
-      apstra_rack_type.Frontend-Mgmt-Weka,
+      apstra_logical_device.ai_spine_32x400,
+      apstra_rack_type.frontend_mgmt_ai,
+      apstra_rack_type.frontend_mgmt_weka,
     ]
   }
 }
