@@ -111,7 +111,7 @@ resource "apstra_datacenter_device_allocation" "gpus_spines" {
 #
 # Assign interface map for leafs
 #
-resource "apstra_datacenter_device_allocation" "frontend-leafs1" {
+resource "apstra_datacenter_device_allocation" "frontend_leafs1" {
   blueprint_id             = apstra_datacenter_blueprint.mgmt_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_64x100.id
   node_name                = format("%s_001_leaf1", replace(lower(apstra_rack_type.frontend_mgmt_ai.name), "-", "_"))
@@ -125,7 +125,7 @@ resource "apstra_datacenter_device_allocation" "frontend_leafs2" {
   deploy_mode              = "deploy"
 }
 
-resource "apstra_datacenter_device_allocation" "storage-leafs1" {
+resource "apstra_datacenter_device_allocation" "storage_leafs1" {
   count                    = 2
   blueprint_id             = apstra_datacenter_blueprint.storage_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_32x200.id
