@@ -37,10 +37,40 @@ data "apstra_datacenter_interfaces_by_link_tag" "storage_weka_links" {
     tags         = ["storage_weka"]
 }
 
+
+
 resource "apstra_datacenter_connectivity_template_assignment" "storage_assign_ct_weka" {
   count = apstra_rack_type.storage_weka.generic_systems.weka-storage.count * local.storage_weka_rack_leaf_count
   blueprint_id              = apstra_datacenter_blueprint.storage_bp.id
   application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.storage_weka_links.ids)[count.index]
+  connectivity_template_ids = [
+    apstra_datacenter_connectivity_template.storage_l3_ct.id
+  ]
+}
+
+data "apstra_datacenter_interfaces_by_link_tag" "storage_ai_links1" {
+    blueprint_id = apstra_datacenter_blueprint.storage_bp.id
+    tags         = ["storage_h100"]
+}
+
+resource "apstra_datacenter_connectivity_template_assignment" "storage_assign_ct_ai1" {
+  count = apstra_rack_type.storage_ai.generic_systems.dgx-h100-storage.count * local.storage_rack_leaf_count
+  blueprint_id              = apstra_datacenter_blueprint.storage_bp.id
+  application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.storage_ai_links1.ids)[count.index]
+  connectivity_template_ids = [
+    apstra_datacenter_connectivity_template.storage_l3_ct.id
+  ]
+}
+
+data "apstra_datacenter_interfaces_by_link_tag" "storage_ai_links2" {
+    blueprint_id = apstra_datacenter_blueprint.storage_bp.id
+    tags         = ["storage_a100"]
+}
+
+resource "apstra_datacenter_connectivity_template_assignment" "storage_assign_ct_ai2" {
+  count = apstra_rack_type.storage_ai.generic_systems.hgx-a100-storage-1.count + apstra_rack_type.storage_ai.generic_systems.hgx-a100-storage-2.count
+  blueprint_id              = apstra_datacenter_blueprint.storage_bp.id
+  application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.storage_ai_links2.ids)[count.index]
   connectivity_template_ids = [
     apstra_datacenter_connectivity_template.storage_l3_ct.id
   ]
