@@ -48,29 +48,29 @@ resource "apstra_datacenter_connectivity_template_assignment" "storage_assign_ct
   ]
 }
 
-data "apstra_datacenter_interfaces_by_link_tag" "storage_ai_links1" {
+data "apstra_datacenter_interfaces_by_link_tag" "storage_ai_links_h100" {
     blueprint_id = apstra_datacenter_blueprint.storage_bp.id
     tags         = ["storage_h100"]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "storage_assign_ct_ai1" {
+resource "apstra_datacenter_connectivity_template_assignment" "storage_assign_ct_h100" {
   count = apstra_rack_type.storage_ai.generic_systems.dgx-h100-storage.count * local.storage_rack_leaf_count
   blueprint_id              = apstra_datacenter_blueprint.storage_bp.id
-  application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.storage_ai_links1.ids)[count.index]
+  application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.storage_ai_links_h100.ids)[count.index]
   connectivity_template_ids = [
     apstra_datacenter_connectivity_template.storage_l3_ct.id
   ]
 }
 
-data "apstra_datacenter_interfaces_by_link_tag" "storage_ai_links2" {
+data "apstra_datacenter_interfaces_by_link_tag" "storage_ai_links_a100" {
     blueprint_id = apstra_datacenter_blueprint.storage_bp.id
     tags         = ["storage_a100"]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "storage_assign_ct_ai2" {
+resource "apstra_datacenter_connectivity_template_assignment" "storage_assign_ct_a100" {
   count = apstra_rack_type.storage_ai.generic_systems.hgx-a100-storage-1.count + apstra_rack_type.storage_ai.generic_systems.hgx-a100-storage-2.count
   blueprint_id              = apstra_datacenter_blueprint.storage_bp.id
-  application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.storage_ai_links2.ids)[count.index]
+  application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.storage_ai_links_a100.ids)[count.index]
   connectivity_template_ids = [
     apstra_datacenter_connectivity_template.storage_l3_ct.id
   ]
