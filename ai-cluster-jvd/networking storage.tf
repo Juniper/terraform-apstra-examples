@@ -38,10 +38,23 @@ data "apstra_datacenter_interfaces_by_link_tag" "storage_weka_links" {
 }
 
 resource "apstra_datacenter_connectivity_template_assignment" "storage_assign_ct_weka" {
-  count = apstra_rack_type.storage_weka.generic_systems.weka-storage.count
+  count = apstra_rack_type.storage_weka.generic_systems.weka-storage.count * local.storage_weka_rack_leaf_count
   blueprint_id              = apstra_datacenter_blueprint.storage_bp.id
   application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.storage_weka_links.ids)[count.index]
   connectivity_template_ids = [
     apstra_datacenter_connectivity_template.storage_l3_ct.id
   ]
+}
+
+resource "apstra_ipv4_pool" "storage_subnet" {
+  name = "Storage subnet pool"
+  subnets = [
+    { network = "10.100.0.0/16"},
+  ]
+}
+
+resource "apstra_datacenter_resource_pool_allocation" "storage_subnet_alloc" {
+  blueprint_id = apstra_datacenter_blueprint.storage_bp.id
+  pool_ids     = [apstra_ipv4_pool.storage_subnet.id]
+  role         = "to_generic_link_ips"
 }

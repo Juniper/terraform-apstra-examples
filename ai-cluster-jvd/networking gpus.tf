@@ -96,3 +96,17 @@ resource "apstra_datacenter_connectivity_template_assignment" "gpu_medium_assign
     apstra_datacenter_connectivity_template.backend_to_gpu_l3_ct.id
   ]
 }
+
+
+resource "apstra_ipv4_pool" "gpus_subnet" {
+  name = "GPUs subnet pool"
+  subnets = [
+    { network = "10.200.0.0/16"},
+  ]
+}
+
+resource "apstra_datacenter_resource_pool_allocation" "gpu_subnet_alloc" {
+  blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
+  pool_ids     = [apstra_ipv4_pool.gpus_subnet.id]
+  role         = "to_generic_link_ips"
+}

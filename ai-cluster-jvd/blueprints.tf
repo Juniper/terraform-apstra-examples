@@ -89,7 +89,9 @@ resource "apstra_datacenter_device_allocation" "frontend_spines" {
   blueprint_id             = apstra_datacenter_blueprint.mgmt_bp.id
   initial_interface_map_id = apstra_interface_map.ai_spine_32x400.id
   node_name                = "spine${count.index + 1}"
-  deploy_mode              = "deploy"
+  # commenting out the deploy_mode as this will block the below BP deploy/commit
+  # unless device system IDs are also provided which we will add later
+  #deploy_mode              = "deploy"
 }
 
 resource "apstra_datacenter_device_allocation" "storage_spines" {
@@ -97,7 +99,7 @@ resource "apstra_datacenter_device_allocation" "storage_spines" {
   blueprint_id             = apstra_datacenter_blueprint.storage_bp.id
   initial_interface_map_id = apstra_interface_map.ai_spine_32x400.id
   node_name                = "spine${count.index + 1}"
-  deploy_mode              = "deploy"
+#  deploy_mode              = "deploy"
 }
 
 resource "apstra_datacenter_device_allocation" "gpus_spines" {
@@ -105,7 +107,7 @@ resource "apstra_datacenter_device_allocation" "gpus_spines" {
   blueprint_id             = apstra_datacenter_blueprint.gpu_bp.id
   initial_interface_map_id = var.all_qfx_backend ? apstra_interface_map.ai_spine_64x400.id : apstra_interface_map.ai_spine_ptx10008_72x400.id
   node_name                = "spine${count.index + 1}"
-  deploy_mode              = "deploy"
+#  deploy_mode              = "deploy"
 }
 
 #
@@ -115,14 +117,14 @@ resource "apstra_datacenter_device_allocation" "frontend_leafs1" {
   blueprint_id             = apstra_datacenter_blueprint.mgmt_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_64x100.id
   node_name                = format("%s_001_leaf1", replace(lower(apstra_rack_type.frontend_mgmt_ai.name), "-", "_"))
-  deploy_mode              = "deploy"
+#  deploy_mode              = "deploy"
 }
 
 resource "apstra_datacenter_device_allocation" "frontend_leafs2" {
   blueprint_id             = apstra_datacenter_blueprint.mgmt_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_64x100.id
   node_name                = format("%s_001_leaf1", replace(lower(apstra_rack_type.frontend_mgmt_weka.name), "-", "_"))
-  deploy_mode              = "deploy"
+#  deploy_mode              = "deploy"
 }
 
 resource "apstra_datacenter_device_allocation" "storage_leafs1" {
@@ -130,7 +132,7 @@ resource "apstra_datacenter_device_allocation" "storage_leafs1" {
   blueprint_id             = apstra_datacenter_blueprint.storage_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_32x200.id
   node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.storage_ai.name), "-", "_"), count.index + 1)
-  deploy_mode              = "deploy"
+#  deploy_mode              = "deploy"
 }
 
 resource "apstra_datacenter_device_allocation" "storage_leafs2" {
@@ -138,7 +140,7 @@ resource "apstra_datacenter_device_allocation" "storage_leafs2" {
   blueprint_id             = apstra_datacenter_blueprint.storage_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_32x200.id
   node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.storage_weka.name), "-", "_"), count.index + 1)
-  deploy_mode              = "deploy"
+#  deploy_mode              = "deploy"
 }
 
 resource "apstra_datacenter_device_allocation" "gpu_leafs1" {
@@ -146,7 +148,7 @@ resource "apstra_datacenter_device_allocation" "gpu_leafs1" {
   blueprint_id             = apstra_datacenter_blueprint.gpu_bp.id
   initial_interface_map_id = apstra_interface_map.ai_lab_leaf_small.id
   node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_sml.name), "-", "_"), count.index + 1)
-  deploy_mode              = "deploy"
+#  deploy_mode              = "deploy"
 }
 
 resource "apstra_datacenter_device_allocation" "gpu_leafs2" {
@@ -154,7 +156,7 @@ resource "apstra_datacenter_device_allocation" "gpu_leafs2" {
   blueprint_id             = apstra_datacenter_blueprint.gpu_bp.id
   initial_interface_map_id = apstra_interface_map.ai_lab_leaf_medium.id
   node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_med.name), "-", "_"), count.index + 1)
-  deploy_mode              = "deploy"
+#  deploy_mode              = "deploy"
 }
 
 
@@ -174,4 +176,78 @@ resource "apstra_datacenter_configlet" "dlb_storage" {
   blueprint_id         = apstra_datacenter_blueprint.storage_bp.id
   catalog_configlet_id = apstra_configlet.dlb.id
   condition            = "role in [\"leaf\", \"spine\"]"
+}
+
+
+# Deploy and commit changes to frontend blueprint
+
+# Ensure all dependencies are added here so that blueprint does not commit without
+# these being met
+
+resource "apstra_blueprint_deployment" "mgmt_bp_deploy" {
+  blueprint_id = apstra_datacenter_blueprint.mgmt_bp.id
+  depends_on = [
+    apstra_tag.host_tags,
+    apstra_datacenter_device_allocation.frontend_leafs1,
+    apstra_datacenter_device_allocation.frontend_leafs2,
+    apstra_datacenter_device_allocation.frontend_spines,
+    apstra_datacenter_resource_pool_allocation.asns,
+    apstra_datacenter_resource_pool_allocation.ipv4,
+    apstra_datacenter_connectivity_template_assignment.frontend_assign_ct_headend,
+    apstra_datacenter_connectivity_template_assignment.frontend_assign_ct_a100,
+    apstra_datacenter_connectivity_template_assignment.frontend_assign_ct_h100,
+    apstra_datacenter_connectivity_template_assignment.frontend_assign_ct_weka
+  ]
+
+  # Version is replaced using `text/template` method. Only predefined values
+  # may be replaced with this syntax. USER is replaced using values from the
+  # environment. Any environment variable may be specified this way.
+  comment      = "Deployment by Terraform {{.TerraformVersion}}, Apstra provider {{.ProviderVersion}}, User $USER."
+}
+
+# deploy and commit backend bluprint 
+
+resource "apstra_blueprint_deployment" "gpu_bp_deploy" {
+  blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
+  depends_on = [
+    apstra_tag.host_tags,
+    apstra_datacenter_device_allocation.gpu_leafs1,
+    apstra_datacenter_device_allocation.gpu_leafs2,
+    apstra_datacenter_device_allocation.gpus_spines,
+    apstra_datacenter_resource_pool_allocation.asns,
+    apstra_datacenter_resource_pool_allocation.ipv4,
+    apstra_datacenter_connectivity_template_assignment.gpu_small_assign_ct_a100,
+    apstra_datacenter_connectivity_template_assignment.gpu_medium_assign_ct_a100,
+    apstra_datacenter_connectivity_template_assignment.gpu_small_assign_ct_h100,
+    apstra_datacenter_connectivity_template_assignment.gpu_medium_assign_ct_h100,
+    apstra_datacenter_resource_pool_allocation.gpu_subnet_alloc,
+    apstra_datacenter_configlet.dlb_gpu
+  ]
+
+  # Version is replaced using `text/template` method. Only predefined values
+  # may be replaced with this syntax. USER is replaced using values from the
+  # environment. Any environment variable may be specified this way.
+  comment      = "Deployment by Terraform {{.TerraformVersion}}, Apstra provider {{.ProviderVersion}}, User $USER."
+}
+
+# deploy and commit storage bluprint 
+
+resource "apstra_blueprint_deployment" "storage_bp_deploy" {
+  blueprint_id = apstra_datacenter_blueprint.storage_bp.id
+  depends_on = [
+    apstra_tag.host_tags,
+    apstra_datacenter_device_allocation.storage_leafs1,
+    apstra_datacenter_device_allocation.storage_leafs2,
+    apstra_datacenter_device_allocation.storage_spines,
+    apstra_datacenter_resource_pool_allocation.asns,
+    apstra_datacenter_resource_pool_allocation.ipv4,
+    apstra_datacenter_connectivity_template_assignment.storage_assign_ct_weka,
+    apstra_datacenter_resource_pool_allocation.storage_subnet_alloc,
+    apstra_datacenter_configlet.dlb_storage
+  ]
+
+  # Version is replaced using `text/template` method. Only predefined values
+  # may be replaced with this syntax. USER is replaced using values from the
+  # environment. Any environment variable may be specified this way.
+  comment      = "Deployment by Terraform {{.TerraformVersion}}, Apstra provider {{.ProviderVersion}}, User $USER."
 }
