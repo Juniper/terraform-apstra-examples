@@ -178,6 +178,18 @@ resource "apstra_datacenter_configlet" "dlb_storage" {
   condition            = "role in [\"leaf\", \"spine\"]"
 }
 
+resource "apstra_datacenter_configlet" "dcqcn_gpu" {
+  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+  catalog_configlet_id = apstra_configlet.dlb.id
+  condition            = var.all_qfx_backend ? "role in [\"leaf\", \"spine\"]" : "role in [\"leaf\"]"
+}
+
+resource "apstra_datacenter_configlet" "dcqcn_storage" {
+  blueprint_id         = apstra_datacenter_blueprint.storage_bp.id
+  catalog_configlet_id = apstra_configlet.dlb.id
+  condition            = "role in [\"leaf\", \"spine\"]"
+}
+
 
 # Deploy and commit changes to frontend blueprint
 
