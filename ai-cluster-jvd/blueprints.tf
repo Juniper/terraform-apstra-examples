@@ -178,18 +178,41 @@ resource "apstra_datacenter_configlet" "dlb_storage" {
   condition            = "role in [\"leaf\", \"spine\"]"
 }
 
-resource "apstra_datacenter_configlet" "dcqcn_gpu" {
+resource "apstra_datacenter_configlet" "dcqcn_gpu_spine" {
   blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
-  catalog_configlet_id = apstra_configlet.dlb.id
-  condition            = var.all_qfx_backend ? "role in [\"leaf\", \"spine\"]" : "role in [\"leaf\"]"
+  catalog_configlet_id = var.all_qfx_backend ? apstra_configlet.ai_spine_64x400_dcqcn.id :apstra_configlet.ai_spine_ptx10008_72x400_dcqcn.id
+  condition            = "role in [\"spine\"]"
 }
 
-resource "apstra_datacenter_configlet" "dcqcn_storage" {
+resource "apstra_datacenter_configlet" "dcqcn_storage_spine" {
   blueprint_id         = apstra_datacenter_blueprint.storage_bp.id
-  catalog_configlet_id = apstra_configlet.dlb.id
-  condition            = "role in [\"leaf\", \"spine\"]"
+  catalog_configlet_id = apstra_configlet.ai_spine_32x400_dcqcn.id
+  condition            = "role in [\"spine\"]"
 }
 
+resource "apstra_datacenter_configlet" "dcqcn_gpu_leaf_medium_dcqn" {
+  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+  catalog_configlet_id = apstra_configlet.ai_lab_leaf_medium_dcqcn.id
+  condition            = "(\"gpu_medium\"in tags)"
+}
+
+resource "apstra_datacenter_configlet" "dcqcn_gpu_leaf_small_dcqn" {
+  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+  catalog_configlet_id = apstra_configlet.ai_lab_leaf_small_dcqcn.id
+  condition            = "(\"gpu_small\"in tags"
+}
+
+resource "apstra_datacenter_configlet" "dcqcn_storage_leaf_16x400_32x200_dcqn" {
+  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+  catalog_configlet_id = apstra_configlet.ai_leaf_16x400_32x200_dcqcn.id
+  condition            = "(\"storage_h100\"in tags"
+}
+
+resource "apstra_datacenter_configlet" "dcqcn_storage_leaf_small_dcqn" {
+  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+  catalog_configlet_id = apstra_configlet.ai_lab_leaf_small_dcqcn.id
+  condition            = "(\"storage_weka\"in tags"
+}
 
 # Deploy and commit changes to frontend blueprint
 

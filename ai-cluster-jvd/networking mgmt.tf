@@ -150,7 +150,7 @@ data "apstra_datacenter_interfaces_by_link_tag" "frontend_weka_links" {
 }
 
 resource "apstra_datacenter_connectivity_template_assignment" "frontend_assign_ct_weka" {
-  count = apstra_rack_type.frontend_mgmt_weka.generic_systems.weka-storage.count
+  count = apstra_rack_type.frontend_mgmt_weka.generic_systems.weka_storage.count
   blueprint_id              = apstra_datacenter_blueprint.mgmt_bp.id
   application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.frontend_weka_links.ids)[count.index]
   connectivity_template_ids = [

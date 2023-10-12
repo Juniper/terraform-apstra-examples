@@ -266,6 +266,28 @@ EOT
 }
 EOT
   ai_spine_64x400_dcqcn_template_text = "${local.dcqcn_static} \n ${local.ai_spine_64x400_dcqcn_interfaces}"
+
+ai_spine_ptx10008_72x400_dcqcn_interfaces = <<-EOT
+    interfaces {
+    # Spine Ports LC 1
+    %{ for i in local.ptx10008_backend_if_map }
+       %{ for j in range(i.count) }
+          ${i.phy_prefix}${j}
+       %{ endfor }
+    %{ endfor }
+
+    all {
+          unit * {
+              classifiers {
+                dscp mydscp;
+              }
+          }
+        }
+    }
+}
+EOT
+
+ai_spine_ptx10008_72x400_dcqcn_template_text = "${local.dcqcn_static} \n ${local.ai_spine_ptx10008_72x400_dcqcn_interfaces}"
 }
 
 # Create Catalog Configlet for small lab leaf
@@ -318,7 +340,7 @@ resource "apstra_configlet" "ai_leaf_16x400_64x100_dcqcn" {
 }
 
 # Create Catalog Configlet for Spine 32x400
-resource "apstra_configlet" "ai_spine_32x400" {
+resource "apstra_configlet" "ai_spine_32x400_dcqcn" {
   name       = "DCQCN for AI Spine 32x400"
   generators = [
     {
@@ -330,7 +352,7 @@ resource "apstra_configlet" "ai_spine_32x400" {
 }
 
 # Create Catalog Configlet for Spine 64x400
-resource "apstra_configlet" "ai_spine_64x400" {
+resource "apstra_configlet" "ai_spine_64x400_dcqcn" {
   name       = "DCQCN for AI Spine 64x400"
   generators = [
     {
@@ -341,3 +363,14 @@ resource "apstra_configlet" "ai_spine_64x400" {
   ]
 }
 
+# Create Catalog Configlet for Spine 64x400
+resource "apstra_configlet" "ai_spine_ptx10008_72x400_dcqcn" {
+  name       = "DCQCN for AI Spine PTX10008 76x400"
+  generators = [
+    {
+      config_style  = "junos"
+      section       = "top_level_hierarchical"
+      template_text = local.ai_spine_ptx10008_72x400_dcqcn_template_text
+    }
+  ]
+}
