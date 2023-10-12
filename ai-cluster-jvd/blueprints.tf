@@ -241,7 +241,9 @@ resource "apstra_blueprint_deployment" "storage_bp_deploy" {
     apstra_datacenter_device_allocation.storage_spines,
     apstra_datacenter_resource_pool_allocation.asns,
     apstra_datacenter_resource_pool_allocation.ipv4,
-    apstra_datacenter_connectivity_template_assignment.storage_assign_ct_weka,
+    apstra_datacenter_connectivity_template_assignment.storage_assign_ct_weka, 
+    apstra_datacenter_connectivity_template_assignment.storage_assign_ct_ai1, 
+    apstra_datacenter_connectivity_template_assignment.storage_assign_ct_ai2, 
     apstra_datacenter_resource_pool_allocation.storage_subnet_alloc,
     apstra_datacenter_configlet.dlb_storage
   ]
