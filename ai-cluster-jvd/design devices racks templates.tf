@@ -437,14 +437,14 @@ locals {
     logical_device_id = apstra_logical_device.ai_lab_leaf_small.id # with 5220
     spine_link_count  = 2
     spine_link_speed  = "400G"
-    tag_ids = [apstra_tag.host_tags["gpu"].id, apstra_tag.host_tags["gpu_small"].id]
+    tag_ids           = [apstra_tag.host_tags["gpu"].id, apstra_tag.host_tags["gpu_small"].id]
   }
 
   backend_rack_leaf_definition_2 = {
     logical_device_id = apstra_logical_device.ai_lab_leaf_medium.id # with 5230
     spine_link_count  = 2
     spine_link_speed  = "400G"
-    tag_ids = [apstra_tag.host_tags["gpu"].id, apstra_tag.host_tags["gpu_medium"].id]
+    tag_ids           = [apstra_tag.host_tags["gpu"].id, apstra_tag.host_tags["gpu_medium"].id]
   }
 }
 
@@ -463,7 +463,7 @@ resource "apstra_rack_type" "gpu_backend_sml" {
       links = { for i in range(local.backend_rack_leaf_count) : "link${i + 1}" => {
         speed              = "400G"
         target_switch_name = "Leaf${i + 1}"
-        tag_ids = [apstra_tag.host_tags["gpu"].id, apstra_tag.host_tags["gpu_h100"].id, apstra_tag.host_tags["gpu_small"].id]
+        tag_ids            = [apstra_tag.host_tags["gpu"].id, apstra_tag.host_tags["gpu_h100"].id, apstra_tag.host_tags["gpu_small"].id]
       } }
     },
     hgx_a100 = {
@@ -472,7 +472,7 @@ resource "apstra_rack_type" "gpu_backend_sml" {
       links = { for i in range(local.backend_rack_leaf_count) : "link${i + 1}" => {
         speed              = "200G"
         target_switch_name = "Leaf${i + 1}"
-        tag_ids = [apstra_tag.host_tags["gpu"].id, apstra_tag.host_tags["gpu_a100"].id, apstra_tag.host_tags["gpu_small"].id]
+        tag_ids            = [apstra_tag.host_tags["gpu"].id, apstra_tag.host_tags["gpu_a100"].id, apstra_tag.host_tags["gpu_small"].id]
       } }
     }
   }
@@ -493,7 +493,7 @@ resource "apstra_rack_type" "gpu_backend_med" {
       links = { for i in range(local.backend_rack_leaf_count) : "link${i + 1}" => {
         speed              = "400G"
         target_switch_name = "Leaf${i + 1}"
-        tag_ids = [apstra_tag.host_tags["gpu"].id, apstra_tag.host_tags["gpu_h100"].id, apstra_tag.host_tags["gpu_medium"].id]
+        tag_ids            = [apstra_tag.host_tags["gpu"].id, apstra_tag.host_tags["gpu_h100"].id, apstra_tag.host_tags["gpu_medium"].id]
       } }
     },
     hgx_a100 = {
@@ -502,7 +502,7 @@ resource "apstra_rack_type" "gpu_backend_med" {
       links = { for i in range(local.backend_rack_leaf_count) : "link${i + 1}" => {
         speed              = "200G"
         target_switch_name = "Leaf${i + 1}"
-        tag_ids = [apstra_tag.host_tags["gpu"].id, apstra_tag.host_tags["gpu_a100"].id, apstra_tag.host_tags["gpu_medium"].id]
+        tag_ids            = [apstra_tag.host_tags["gpu"].id, apstra_tag.host_tags["gpu_a100"].id, apstra_tag.host_tags["gpu_medium"].id]
       } }
     }
   }
@@ -525,7 +525,7 @@ locals {
     logical_device_id = apstra_logical_device.ai_leaf_small_200.id
     spine_link_count  = 3
     spine_link_speed  = "400G"
-    tag_ids = [apstra_tag.host_tags["storage"].id]
+    tag_ids           = [apstra_tag.host_tags["storage"].id]
   }
 }
 
@@ -543,13 +543,13 @@ resource "apstra_rack_type" "storage_ai" {
         link1 = {
           speed              = "400G"
           target_switch_name = "Leaf1"
-          tag_ids = [apstra_tag.host_tags["storage"].id, apstra_tag.host_tags["storage_h100"].id]
+          tag_ids            = [apstra_tag.host_tags["storage"].id, apstra_tag.host_tags["storage_h100"].id]
 
         },
         link2 = {
           speed              = "400G"
           target_switch_name = "Leaf2"
-          tag_ids = [apstra_tag.host_tags["storage"].id, apstra_tag.host_tags["storage_h100"].id]
+          tag_ids            = [apstra_tag.host_tags["storage"].id, apstra_tag.host_tags["storage_h100"].id]
         },
       }
     },
@@ -560,7 +560,7 @@ resource "apstra_rack_type" "storage_ai" {
         link1 = {
           speed              = "200G"
           target_switch_name = "Leaf1"
-          tag_ids = [apstra_tag.host_tags["storage"].id, apstra_tag.host_tags["storage_a100"].id]
+          tag_ids            = [apstra_tag.host_tags["storage"].id, apstra_tag.host_tags["storage_a100"].id]
         },
       }
     },
@@ -571,7 +571,7 @@ resource "apstra_rack_type" "storage_ai" {
         link1 = {
           speed              = "200G"
           target_switch_name = "Leaf2"
-          tag_ids = [apstra_tag.host_tags["storage"].id, apstra_tag.host_tags["storage_a100"].id]
+          tag_ids            = [apstra_tag.host_tags["storage"].id, apstra_tag.host_tags["storage_a100"].id]
         },
       }
     }
@@ -594,7 +594,7 @@ locals {
     logical_device_id = apstra_logical_device.ai_leaf_small_200.id # with 5220
     spine_link_count  = 2
     spine_link_speed  = "400G"
-    tag_ids = [apstra_tag.host_tags["storage"].id]
+    tag_ids           = [apstra_tag.host_tags["storage"].id]
   }
 }
 
@@ -610,7 +610,7 @@ resource "apstra_rack_type" "storage_weka" {
       links = { for i in range(local.storage_weka_rack_leaf_count) : "link${i + 1}" => {
         speed              = "200G"
         target_switch_name = "Leaf${i + 1}"
-        tag_ids = [apstra_tag.host_tags["storage"].id, apstra_tag.host_tags["storage_weka"].id]
+        tag_ids            = [apstra_tag.host_tags["storage"].id, apstra_tag.host_tags["storage_weka"].id]
       } }
     }
   }
@@ -625,7 +625,7 @@ locals {
     logical_device_id = apstra_logical_device.ai_leaf_16x400_64x100.id
     spine_link_count  = 2
     spine_link_speed  = "400G"
-    tag_ids = [apstra_tag.host_tags["frontend"].id]
+    tag_ids           = [apstra_tag.host_tags["frontend"].id]
   }
 }
 
@@ -644,7 +644,7 @@ resource "apstra_rack_type" "frontend_mgmt_ai" {
         link1 = {
           speed              = "100G"
           target_switch_name = "Leaf1"
-          tag_ids = [apstra_tag.host_tags["frontend"].id, apstra_tag.host_tags["frontend_a100"].id]
+          tag_ids            = [apstra_tag.host_tags["frontend"].id, apstra_tag.host_tags["frontend_a100"].id]
         },
       }
     },
@@ -655,7 +655,7 @@ resource "apstra_rack_type" "frontend_mgmt_ai" {
         link1 = {
           speed              = "100G"
           target_switch_name = "Leaf1"
-          tag_ids = [apstra_tag.host_tags["frontend"].id, apstra_tag.host_tags["frontend_h100"].id]
+          tag_ids            = [apstra_tag.host_tags["frontend"].id, apstra_tag.host_tags["frontend_h100"].id]
         },
       }
     },
@@ -666,7 +666,7 @@ resource "apstra_rack_type" "frontend_mgmt_ai" {
         link1 = {
           speed              = "100G"
           target_switch_name = "Leaf1"
-          tag_ids = [apstra_tag.host_tags["frontend"].id, apstra_tag.host_tags["frontend_headend"].id]
+          tag_ids            = [apstra_tag.host_tags["frontend"].id, apstra_tag.host_tags["frontend_headend"].id]
         }
       }
     },
@@ -692,7 +692,7 @@ resource "apstra_rack_type" "frontend_mgmt_weka" {
         link1 = {
           speed              = "100G"
           target_switch_name = "Leaf1"
-          tag_ids = [apstra_tag.host_tags["frontend"].id, apstra_tag.host_tags["frontend_weka"].id]
+          tag_ids            = [apstra_tag.host_tags["frontend"].id, apstra_tag.host_tags["frontend_weka"].id]
         },
       }
     }
