@@ -6,7 +6,7 @@
 
 data "apstra_datacenter_routing_zone" "backend_default_rz" {
   blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
-  name           = "default"
+  name         = "default"
 }
 
 # Create IP Link data source for CT for backend L3 connections down to GPUs
@@ -23,7 +23,7 @@ resource "apstra_datacenter_connectivity_template" "backend_to_gpu_l3_ct" {
   blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
   name         = "L3_to_GPUs"
   description  = "L3 link to GPUs for IP connectivity in IP Fabric"
-  primitives   = [
+  primitives = [
     data.apstra_datacenter_ct_ip_link.backend_to_gpu.primitive
   ]
 }
@@ -38,28 +38,28 @@ resource "apstra_datacenter_connectivity_template" "backend_to_gpu_l3_ct" {
 # A100 HGX servers:
 #
 data "apstra_datacenter_interfaces_by_link_tag" "gpu_small_a100_links" {
-    blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
-    tags         = ["gpu_a100", "gpu_small"]
+  blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
+  tags         = ["gpu_a100", "gpu_small"]
 }
 
 resource "apstra_datacenter_connectivity_template_assignment" "gpu_small_assign_ct_a100" {
-  count = apstra_rack_type.gpu_backend_sml.generic_systems.hgx_a100.count * local.backend_rack_leaf_count
-  blueprint_id              = apstra_datacenter_blueprint.gpu_bp.id
-  application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.gpu_small_a100_links.ids)[count.index]
+  count                = apstra_rack_type.gpu_backend_sml.generic_systems.hgx_a100.count * local.backend_rack_leaf_count
+  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+  application_point_id = tolist(data.apstra_datacenter_interfaces_by_link_tag.gpu_small_a100_links.ids)[count.index]
   connectivity_template_ids = [
     apstra_datacenter_connectivity_template.backend_to_gpu_l3_ct.id
   ]
 }
 
 data "apstra_datacenter_interfaces_by_link_tag" "gpu_medium_a100_links" {
-    blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
-    tags         = ["gpu_a100", "gpu_medium"]
+  blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
+  tags         = ["gpu_a100", "gpu_medium"]
 }
 
 resource "apstra_datacenter_connectivity_template_assignment" "gpu_medium_assign_ct_a100" {
-  count = apstra_rack_type.gpu_backend_med.generic_systems.hgx_a100.count * local.backend_rack_leaf_count
-  blueprint_id              = apstra_datacenter_blueprint.gpu_bp.id
-  application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.gpu_medium_a100_links.ids)[count.index]
+  count                = apstra_rack_type.gpu_backend_med.generic_systems.hgx_a100.count * local.backend_rack_leaf_count
+  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+  application_point_id = tolist(data.apstra_datacenter_interfaces_by_link_tag.gpu_medium_a100_links.ids)[count.index]
   connectivity_template_ids = [
     apstra_datacenter_connectivity_template.backend_to_gpu_l3_ct.id
   ]
@@ -70,28 +70,28 @@ resource "apstra_datacenter_connectivity_template_assignment" "gpu_medium_assign
 #
 
 data "apstra_datacenter_interfaces_by_link_tag" "gpu_small_h100_links" {
-    blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
-    tags         = ["gpu_h100", "gpu_small"]
+  blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
+  tags         = ["gpu_h100", "gpu_small"]
 }
 
 resource "apstra_datacenter_connectivity_template_assignment" "gpu_small_assign_ct_h100" {
-  count = apstra_rack_type.gpu_backend_sml.generic_systems.dgx_h100.count * local.backend_rack_leaf_count
-  blueprint_id              = apstra_datacenter_blueprint.gpu_bp.id
-  application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.gpu_small_h100_links.ids)[count.index]
+  count                = apstra_rack_type.gpu_backend_sml.generic_systems.dgx_h100.count * local.backend_rack_leaf_count
+  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+  application_point_id = tolist(data.apstra_datacenter_interfaces_by_link_tag.gpu_small_h100_links.ids)[count.index]
   connectivity_template_ids = [
     apstra_datacenter_connectivity_template.backend_to_gpu_l3_ct.id
   ]
 }
 
 data "apstra_datacenter_interfaces_by_link_tag" "gpu_medium_h100_links" {
-    blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
-    tags         = ["gpu_h100", "gpu_medium"]
+  blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
+  tags         = ["gpu_h100", "gpu_medium"]
 }
 
 resource "apstra_datacenter_connectivity_template_assignment" "gpu_medium_assign_ct_h100" {
-  count = apstra_rack_type.gpu_backend_med.generic_systems.dgx_h100.count * local.backend_rack_leaf_count
-  blueprint_id              = apstra_datacenter_blueprint.gpu_bp.id
-  application_point_id      = tolist(data.apstra_datacenter_interfaces_by_link_tag.gpu_medium_h100_links.ids)[count.index]
+  count                = apstra_rack_type.gpu_backend_med.generic_systems.dgx_h100.count * local.backend_rack_leaf_count
+  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+  application_point_id = tolist(data.apstra_datacenter_interfaces_by_link_tag.gpu_medium_h100_links.ids)[count.index]
   connectivity_template_ids = [
     apstra_datacenter_connectivity_template.backend_to_gpu_l3_ct.id
   ]
@@ -101,7 +101,7 @@ resource "apstra_datacenter_connectivity_template_assignment" "gpu_medium_assign
 resource "apstra_ipv4_pool" "gpus_subnet" {
   name = "GPUs subnet pool"
   subnets = [
-    { network = "10.200.0.0/16"},
+    { network = "10.200.0.0/16" },
   ]
 }
 

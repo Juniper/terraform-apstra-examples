@@ -1,16 +1,10 @@
 #
-# Placeholder file for DCQCN configlet
+# DCQCN configlet
 # 
-# todo: needs adaption for interface-based configs
 
 locals {
-  configlet = {
-    name = "DCQCN"
-    generators = [
-      {
-        config_style  = "junos"
-        section       = "top_level_hierarchical"
-        template_text = <<-EOT
+
+  dcqcn_static = <<-EOT
 class-of-service {
     classifiers {
         dscp mydscp {
@@ -45,7 +39,7 @@ class-of-service {
             }
             buffer-partition lossy {
                 percent 10;
-            }                          
+            }
             inactive: buffer-partition multicast {
                 inactive: percent 10;
             }
@@ -86,41 +80,7 @@ class-of-service {
             }
         }
     }
-    interfaces {
-        et-0/0/1 {
-            scheduler-map sm1;
-        }
-        et-0/0/2 {
-            scheduler-map sm1;
-        }
-        et-0/0/3 {
-            congestion-notification-profile cnp;
-            scheduler-map sm1;
-        }                              
-        et-0/0/5 {
-            congestion-notification-profile cnp;
-            scheduler-map sm1;
-        }
-        et-0/0/6 {
-            congestion-notification-profile cnp;
-            scheduler-map sm1;
-        }
-        et-0/0/7 {
-            congestion-notification-profile cnp;
-            scheduler-map sm1;
-        }
-        et-0/0/9 {
-            congestion-notification-profile cnp;
-            scheduler-map sm1;
-        }
-        all {
-            unit * {
-                classifiers {
-                    dscp mydscp;
-                }
-            }
-        }
-    }
+
     scheduler-maps {
         sm1 {
             forwarding-class NO-LOSS scheduler s1;
@@ -132,15 +92,285 @@ class-of-service {
             explicit-congestion-notification;
         }
     }
+EOT
+
+
+  #  AI Lab Leaf Small DCQN
+
+  ai_lab_leaf_small_dcqcn_interfaces    = <<-EOT
+    interfaces {
+    # Spine Facing Ports
+    %{for i in range(local.ai_leaf_small_200_spine_port_count)}
+      et-0/0/${i} {
+        scheduler-map sm1;
+      }
+    %{endfor}
+
+    # Server Facing Interfaces 200G
+    %{for i in range(local.ai_leaf_small_200_server_port_count)}
+      et-0/0/${local.ai_leaf_small_200_server_dp_port_first + floor(i / 2)}:${i % 2} {
+        congestion-notification-profile cnp;
+        scheduler-map sm1;
+      }
+    %{endfor}
+    # Server Facing Interfaces 400G
+    %{for i in range(local.ai_leaf_small_400_server_port_count)}
+      et-0/0/${local.ai_leaf_small_400_server_dp_port_first + i} {
+        congestion-notification-profile cnp;
+        scheduler-map sm1;
+      }
+    %{endfor}
+      all {
+          unit * {
+              classifiers {
+                dscp mydscp;
+              }
+          }
+        }
+    }
 }
-            EOT
-      },
-    ]
-  }
+EOT
+  ai_lab_leaf_small_dcqcn_template_text = "${local.dcqcn_static} \n ${local.ai_lab_leaf_small_dcqcn_interfaces}"
+
+  #  AI Lab Leaf Medium DCQCN
+
+  ai_lab_leaf_medium_dcqcn_interfaces    = <<-EOT
+    interfaces {
+    # Spine Facing Ports
+    %{for i in range(local.ai_leaf_medium_200_spine_port_count)}
+      et-0/0/${i} {
+        scheduler-map sm1;
+      }
+    %{endfor}
+
+    # Server Facing Interfaces 200G
+    %{for i in range(local.ai_leaf_medium_200_server_port_count)}
+      et-0/0/${local.ai_leaf_medium_200_server_dp_port_first + floor(i / 2)}:${i % 2} {
+        congestion-notification-profile cnp;
+        scheduler-map sm1;
+      }
+    %{endfor}
+    # Server Facing Interfaces 400G
+    %{for i in range(local.ai_leaf_medium_400_server_port_count)}
+      et-0/0/${local.ai_leaf_medium_400_server_dp_port_first + i} {
+        congestion-notification-profile cnp;
+        scheduler-map sm1;
+      }
+    %{endfor}
+      all {
+          unit * {
+              classifiers {
+                dscp mydscp;
+              }
+          }
+        }
+    }
 }
-# Create Catalog Configlet
-resource "apstra_configlet" "dcqcn" {
-  name       = local.configlet.name
-  generators = local.configlet.generators
+EOT
+  ai_lab_leaf_medium_dcqcn_template_text = "${local.dcqcn_static} \n ${local.ai_lab_leaf_medium_dcqcn_interfaces}"
+
+  ai_leaf_16x400_32x200_dcqcn_interfaces    = <<-EOT
+    interfaces {
+    # Spine Facing Ports
+    %{for i in range(local.ai_leaf_16x400_32x200_spine_port_count)}
+      et-0/0/${i} {
+        scheduler-map sm1;
+      }
+    %{endfor}
+
+    # Server Facing Interfaces
+    %{for i in range(local.ai_leaf_16x400_32x200_server_port_count)}
+      et-0/0/${local.ai_leaf_16x400_32x200_server_dp_port_first + floor(i / 2)}:${i % 2} {
+        congestion-notification-profile cnp;
+        scheduler-map sm1;
+      }
+    %{endfor}
+    all {
+          unit * {
+              classifiers {
+                dscp mydscp;
+              }
+          }
+        }
+    }
+}
+EOT
+  ai_leaf_16x400_32x200_dcqcn_template_text = "${local.dcqcn_static} \n ${local.ai_leaf_16x400_64x100_dcqcn_interfaces}"
+
+  ai_leaf_16x400_64x100_dcqcn_interfaces    = <<-EOT
+    interfaces {
+    # Spine Facing Ports
+    %{for i in range(local.ai_leaf_16x400_64x100_spine_port_count)}
+      et-0/0/${i} {
+        scheduler-map sm1;
+      }
+    %{endfor}
+
+    # Server Facing Interfaces
+    %{for i in range(local.ai_leaf_16x400_64x100_server_port_count)}
+      et-0/0/${local.ai_leaf_16x400_64x100_server_dp_port_first + floor(i / 2)}:${i % 2} {
+        congestion-notification-profile cnp;
+        scheduler-map sm1;
+      }
+    %{endfor}
+    all {
+          unit * {
+              classifiers {
+                dscp mydscp;
+              }
+          }
+        }
+    }
+}
+EOT
+  ai_leaf_16x400_64x100_dcqcn_template_text = "${local.dcqcn_static} \n ${local.ai_leaf_16x400_64x100_dcqcn_interfaces}"
+
+  ai_spine_32x400_dcqcn_interfaces    = <<-EOT
+    interfaces {
+    # Spine Ports
+    %{for i in range(local.ai_spine_32x400_port_count)}
+      et-0/0/${i} {
+        scheduler-map sm1;
+      }
+    %{endfor}
+
+    all {
+          unit * {
+              classifiers {
+                dscp mydscp;
+              }
+          }
+        }
+    }
+}
+EOT
+  ai_spine_32x400_dcqcn_template_text = "${local.dcqcn_static} \n ${local.ai_spine_32x400_dcqcn_interfaces}"
+
+  ai_spine_64x400_dcqcn_interfaces    = <<-EOT
+    interfaces {
+    # Spine Ports
+    %{for i in range(local.ai_spine_64x400_port_count)}
+      et-0/0/${i} {
+        scheduler-map sm1;
+      }
+    %{endfor}
+
+    all {
+          unit * {
+              classifiers {
+                dscp mydscp;
+              }
+          }
+        }
+    }
+}
+EOT
+  ai_spine_64x400_dcqcn_template_text = "${local.dcqcn_static} \n ${local.ai_spine_64x400_dcqcn_interfaces}"
+
+  ai_spine_ptx10008_72x400_dcqcn_interfaces = <<-EOT
+    interfaces {
+    # Spine Ports LC 1
+    %{for i in local.ptx10008_backend_if_map}
+       %{for j in range(i.count)}
+          ${i.phy_prefix}${j}
+       %{endfor}
+    %{endfor}
+
+    all {
+          unit * {
+              classifiers {
+                dscp mydscp;
+              }
+          }
+        }
+    }
+}
+EOT
+
+  ai_spine_ptx10008_72x400_dcqcn_template_text = "${local.dcqcn_static} \n ${local.ai_spine_ptx10008_72x400_dcqcn_interfaces}"
 }
 
+# Create Catalog Configlet for small lab leaf
+resource "apstra_configlet" "ai_lab_leaf_small_dcqcn" {
+  name = "DCQCN for small AI Lab Leaf"
+  generators = [
+    {
+      config_style  = "junos"
+      section       = "top_level_hierarchical"
+      template_text = local.ai_lab_leaf_small_dcqcn_template_text
+    }
+  ]
+}
+
+# Create Catalog Configlet for medium lab leaf
+resource "apstra_configlet" "ai_lab_leaf_medium_dcqcn" {
+  name = "DCQCN for small AI Lab Leaf"
+  generators = [
+    {
+      config_style  = "junos"
+      section       = "top_level_hierarchical"
+      template_text = local.ai_lab_leaf_medium_dcqcn_template_text
+    }
+  ]
+}
+
+
+# Create Catalog Configlet for Leaf 16x400/32x200
+resource "apstra_configlet" "ai_leaf_16x400_32x200_dcqcn" {
+  name = "DCQCN for AI Leaf 16x400/32x200"
+  generators = [
+    {
+      config_style  = "junos"
+      section       = "top_level_hierarchical"
+      template_text = local.ai_leaf_16x400_32x200_dcqcn_template_text
+    }
+  ]
+}
+
+# Create Catalog Configlet for Leaf 16x400/64x100
+resource "apstra_configlet" "ai_leaf_16x400_64x100_dcqcn" {
+  name = "DCQCN for AI Leaf 16x400/64x100"
+  generators = [
+    {
+      config_style  = "junos"
+      section       = "top_level_hierarchical"
+      template_text = local.ai_leaf_16x400_64x100_dcqcn_template_text
+    }
+  ]
+}
+
+# Create Catalog Configlet for Spine 32x400
+resource "apstra_configlet" "ai_spine_32x400_dcqcn" {
+  name = "DCQCN for AI Spine 32x400"
+  generators = [
+    {
+      config_style  = "junos"
+      section       = "top_level_hierarchical"
+      template_text = local.ai_spine_32x400_dcqcn_template_text
+    }
+  ]
+}
+
+# Create Catalog Configlet for Spine 64x400
+resource "apstra_configlet" "ai_spine_64x400_dcqcn" {
+  name = "DCQCN for AI Spine 64x400"
+  generators = [
+    {
+      config_style  = "junos"
+      section       = "top_level_hierarchical"
+      template_text = local.ai_spine_64x400_dcqcn_template_text
+    }
+  ]
+}
+
+# Create Catalog Configlet for Spine 64x400
+resource "apstra_configlet" "ai_spine_ptx10008_72x400_dcqcn" {
+  name = "DCQCN for AI Spine PTX10008 76x400"
+  generators = [
+    {
+      config_style  = "junos"
+      section       = "top_level_hierarchical"
+      template_text = local.ai_spine_ptx10008_72x400_dcqcn_template_text
+    }
+  ]
+}
