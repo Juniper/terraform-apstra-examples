@@ -95,7 +95,7 @@ class-of-service {
 EOT
 
 
-  #  AI Lab Leaf Small DCQN
+  #  AI Lab Leaf Small DCQCN
 
   ai_lab_leaf_small_dcqcn_interfaces    = <<-EOT
     interfaces {
@@ -304,7 +304,7 @@ resource "apstra_configlet" "ai_lab_leaf_small_dcqcn" {
 
 # Create Catalog Configlet for medium lab leaf
 resource "apstra_configlet" "ai_lab_leaf_medium_dcqcn" {
-  name = "DCQCN for small AI Lab Leaf"
+  name = "DCQCN for medium AI Lab Leaf"
   generators = [
     {
       config_style  = "junos"
