@@ -199,19 +199,19 @@ resource "apstra_datacenter_configlet" "dcqcn_gpu_leaf_medium_dcqcn" {
 resource "apstra_datacenter_configlet" "dcqcn_gpu_leaf_small_dcqcn" {
   blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
   catalog_configlet_id = apstra_configlet.ai_lab_leaf_small_dcqcn.id
-  condition            = "(\"gpu_small\"in tags"
+  condition            = "(\"gpu_small\"in tags)"
 }
 
 resource "apstra_datacenter_configlet" "dcqcn_storage_leaf_16x400_32x200_dcqcn" {
   blueprint_id         = apstra_datacenter_blueprint.storage_bp.id
   catalog_configlet_id = apstra_configlet.ai_leaf_16x400_32x200_dcqcn.id
-  condition            = "(\"storage_h100\"in tags"
+  condition            = "(\"storage_h100\"in tags)"
 }
 
 resource "apstra_datacenter_configlet" "dcqcn_storage_leaf_small_dcqcn" {
   blueprint_id         = apstra_datacenter_blueprint.storage_bp.id
   catalog_configlet_id = apstra_configlet.ai_lab_leaf_small_dcqcn.id
-  condition            = "(\"storage_weka\"in tags"
+  condition            = "(\"storage_weka\"in tags)"
 }
 
 # Deploy and commit changes to frontend blueprint
