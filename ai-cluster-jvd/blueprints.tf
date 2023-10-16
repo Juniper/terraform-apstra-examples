@@ -190,26 +190,26 @@ resource "apstra_datacenter_configlet" "dcqcn_storage_spine" {
   condition            = "role in [\"spine\"]"
 }
 
-resource "apstra_datacenter_configlet" "dcqcn_gpu_leaf_medium_dcqn" {
+resource "apstra_datacenter_configlet" "dcqcn_gpu_leaf_medium_dcqcn" {
   blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
   catalog_configlet_id = apstra_configlet.ai_lab_leaf_medium_dcqcn.id
   condition            = "(\"gpu_medium\"in tags)"
 }
 
-resource "apstra_datacenter_configlet" "dcqcn_gpu_leaf_small_dcqn" {
+resource "apstra_datacenter_configlet" "dcqcn_gpu_leaf_small_dcqcn" {
   blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
   catalog_configlet_id = apstra_configlet.ai_lab_leaf_small_dcqcn.id
   condition            = "(\"gpu_small\"in tags"
 }
 
-resource "apstra_datacenter_configlet" "dcqcn_storage_leaf_16x400_32x200_dcqn" {
-  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+resource "apstra_datacenter_configlet" "dcqcn_storage_leaf_16x400_32x200_dcqcn" {
+  blueprint_id         = apstra_datacenter_blueprint.storage_bp.id
   catalog_configlet_id = apstra_configlet.ai_leaf_16x400_32x200_dcqcn.id
   condition            = "(\"storage_h100\"in tags"
 }
 
-resource "apstra_datacenter_configlet" "dcqcn_storage_leaf_small_dcqn" {
-  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+resource "apstra_datacenter_configlet" "dcqcn_storage_leaf_small_dcqcn" {
+  blueprint_id         = apstra_datacenter_blueprint.storage_bp.id
   catalog_configlet_id = apstra_configlet.ai_lab_leaf_small_dcqcn.id
   condition            = "(\"storage_weka\"in tags"
 }
@@ -256,7 +256,10 @@ resource "apstra_blueprint_deployment" "gpu_bp_deploy" {
     apstra_datacenter_connectivity_template_assignment.gpu_small_assign_ct_h100,
     apstra_datacenter_connectivity_template_assignment.gpu_medium_assign_ct_h100,
     apstra_datacenter_resource_pool_allocation.gpu_subnet_alloc,
-    apstra_datacenter_configlet.dlb_gpu
+    apstra_datacenter_configlet.dlb_gpu,
+    apstra_datacenter_configlet.dcqcn_gpu_spine,
+    apstra_datacenter_configlet.dcqcn_gpu_leaf_small_dcqcn,
+    apstra_datacenter_configlet.dcqcn_gpu_leaf_medium_dcqcn
   ]
 
   # Version is replaced using `text/template` method. Only predefined values
@@ -280,7 +283,10 @@ resource "apstra_blueprint_deployment" "storage_bp_deploy" {
     apstra_datacenter_connectivity_template_assignment.storage_assign_ct_h100,
     apstra_datacenter_connectivity_template_assignment.storage_assign_ct_a100,
     apstra_datacenter_resource_pool_allocation.storage_subnet_alloc,
-    apstra_datacenter_configlet.dlb_storage
+    apstra_datacenter_configlet.dlb_storage,
+    apstra_datacenter_configlet.dcqcn_storage_spine,
+    apstra_datacenter_configlet.dcqcn_storage_leaf_16x400_32x200_dcqcn,
+    apstra_datacenter_configlet.dcqcn_storage_leaf_small_dcqcn
   ]
 
   # Version is replaced using `text/template` method. Only predefined values

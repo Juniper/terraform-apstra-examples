@@ -95,7 +95,7 @@ class-of-service {
 EOT
 
 
-  #  AI Lab Leaf Small DCQN
+  #  AI Lab Leaf Small DCQCN
 
   ai_lab_leaf_small_dcqcn_interfaces    = <<-EOT
     interfaces {
