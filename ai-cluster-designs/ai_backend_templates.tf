@@ -23,7 +23,7 @@ resource "apstra_template_rack_based" "AI_Cluster_64_DGX-H100" {
   asn_allocation_scheme    = "unique"
   overlay_control_protocol = "static"
   spine = {
-    count             = 8
+    count             = 16
     logical_device_id = apstra_logical_device.AI-Spine_32x400.id
   }
   rack_infos = {
