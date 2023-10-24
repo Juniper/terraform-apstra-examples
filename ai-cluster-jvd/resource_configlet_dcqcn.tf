@@ -272,7 +272,9 @@ EOT
     # Spine Ports LC 1
     %{for i in local.ptx10008_backend_if_map}
        %{for j in range(i.count)}
-          ${i.phy_prefix}${j}
+          ${i.phy_prefix}${j} {
+          scheduler-map sm1;
+        }
        %{endfor}
     %{endfor}
 
