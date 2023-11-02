@@ -1,6 +1,11 @@
 #
 # DCQCN configlet
-# 
+#
+# https://www.juniper.net/documentation/us/en/software/junos/traffic-mgmt-qfx/topics/topic-map/cos-qfx-series-DCQCN.html
+#
+# For more information on shared buffers for mostly lossless fabric:
+# https://www.juniper.net/documentation/us/en/software/junos/traffic-mgmt-qfx/topics/example/cos-shared-buffer-allocation-lossless-qfx-series-configuring.html
+#
 
 locals {
 
@@ -35,13 +40,10 @@ class-of-service {
         }
         egress {
             buffer-partition lossless {
-                percent 80;
+                percent 90;
             }
             buffer-partition lossy {
                 percent 10;
-            }
-            inactive: buffer-partition multicast {
-                inactive: percent 10;
             }
         }
     }
