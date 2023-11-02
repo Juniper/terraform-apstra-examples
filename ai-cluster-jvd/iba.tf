@@ -144,7 +144,7 @@ resource "apstra_blueprint_iba_widget" "w_bandwidth_utilization" {
 resource "apstra_blueprint_iba_dashboard" "b" {
   count = length(local.blueprints)
   blueprint_id = local.blueprints[count.index].id
-  default = false
+  default = true
   description = "AI Dashboard with TF"
   name = "AI Dashboard with TF"
   widget_grid = tolist([
