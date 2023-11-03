@@ -6,6 +6,8 @@
 # For more information on shared buffers for mostly lossless fabric:
 # https://www.juniper.net/documentation/us/en/software/junos/traffic-mgmt-qfx/topics/example/cos-shared-buffer-allocation-lossless-qfx-series-configuring.html
 #
+# Note that on QFX5220/5230 the lossless shared buffer percentage for ingress and egress must match. We default to 80% here.
+#
 
 locals {
 
@@ -40,10 +42,10 @@ class-of-service {
         }
         egress {
             buffer-partition lossless {
-                percent 90;
+                percent 80;
             }
             buffer-partition lossy {
-                percent 10;
+                percent 20;
             }
         }
     }
