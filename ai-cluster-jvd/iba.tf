@@ -123,26 +123,25 @@ resource "apstra_blueprint_iba_widget" "w_bandwidth_utilization" {
   description  = "made from terraform"
 }
 
-resource "apstra_blueprint_iba_probe" "p_east_west_gpu_traffic" {
+resource "apstra_blueprint_iba_probe" "p_east_west_traffic" {
   count               = length(local.blueprints)
   blueprint_id        = local.blueprints[count.index].id
   predefined_probe_id = "eastwest_traffic"
   probe_config        = jsonencode(
     {
-      "label" : "East/West GPU Traffic",
+      "label" : "East/West Traffic",
       "average_period" : 60,
       "history_total_duration" : 43200,
       "external_router_tags" : ["obviously_fake_tag"],
-      "server_tags" : ["GPU"]
     }
   )
 }
 
-resource "apstra_blueprint_iba_widget" "w_east_west_gpu_traffic" {
+resource "apstra_blueprint_iba_widget" "w_east_west_traffic" {
   count        = length(local.blueprints)
   blueprint_id = local.blueprints[count.index].id
-  name         = "East/West GPU traffic"
-  probe_id     = apstra_blueprint_iba_probe.p_east_west_gpu_traffic[count.index].id
+  name         = "East/West traffic"
+  probe_id     = apstra_blueprint_iba_probe.p_east_west_traffic[count.index].id
   stage        = "eastwest_traffic_history"
   description  = "made from terraform"
 }
@@ -187,7 +186,7 @@ resource "apstra_blueprint_iba_dashboard" "b" {
       apstra_blueprint_iba_widget.w_hot_cold_interfaces_hot_leaves[count.index].id,
     ]), tolist([
       apstra_blueprint_iba_widget.w_bandwidth_utilization[count.index].id,
-      apstra_blueprint_iba_widget.w_east_west_gpu_traffic[count.index].id,
+      apstra_blueprint_iba_widget.w_east_west_traffic[count.index].id,
       apstra_blueprint_iba_widget.w_packet_discard_percentage[count.index].id,
     ]),
   ])
