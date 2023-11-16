@@ -1,0 +1,174 @@
+name: jvd
+mgmt:
+  bridge: virbr0
+  ipv4-subnet: 192.168.122.0/24
+topology:
+  nodes:
+    spine1:
+            kind: vr-vjunosswitch
+            image: vrnetlab/vr-vjunosswitch:23.2R1.14
+            mgmt-ipv4: 192.168.122.101
+            startup-config: spine1.cfg
+    spine2:
+            kind: vr-vjunosswitch
+            image: vrnetlab/vr-vjunosswitch:23.2R1.14
+            mgmt-ipv4: 192.168.122.102
+            startup-config: spine2.cfg
+    leaf1: 
+            kind: vr-vjunosswitch
+            image: vrnetlab/vr-vjunosswitch:23.2R1.14
+            mgmt-ipv4: 192.168.122.11
+            startup-config: leaf1.cfg
+    leaf2:
+            kind: vr-vjunosswitch
+            image: vrnetlab/vr-vjunosswitch:23.2R1.14
+            mgmt-ipv4: 192.168.122.12
+            startup-config: leaf2.cfg
+    leaf3:
+            kind: vr-vjunosswitch
+            image: vrnetlab/vr-vjunosswitch:23.2R1.14
+            mgmt-ipv4: 192.168.122.13
+            startup-config: leaf3.cfg
+    leaf4:
+            kind: vr-vjunosswitch
+            image: vrnetlab/vr-vjunosswitch:23.2R1.14
+            mgmt-ipv4: 192.168.122.14
+            startup-config: leaf4.cfg
+    leaf5:
+            kind: vr-vjunosswitch
+            image: vrnetlab/vr-vjunosswitch:23.2R1.14
+            mgmt-ipv4: 192.168.122.15
+            startup-config: leaf5.cfg
+    h1:
+            kind: linux
+            image: aninchat/host:v1
+            mgmt-ipv4: 192.168.122.51
+            exec:
+                - sleep 5
+                - sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=0
+                - ip route add 10.11.2.0/24 via 10.11.1.1
+                - ip route add 10.12.1.0/24 via 10.11.1.1
+                - ip route add 10.12.2.0/24 via 10.11.1.1
+            binds:
+                - hosts/h1_interfaces:/etc/network/interfaces
+    h2:
+            kind: linux
+            image: aninchat/host:v1
+            mgmt-ipv4: 192.168.122.52
+            exec:
+                - sleep 5
+                - sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=0
+                - ip route add 10.11.1.0/24 via 10.12.1.1
+                - ip route add 10.11.2.0/24 via 10.12.1.1
+                - ip route add 10.12.2.0/24 via 10.12.1.1
+            binds:
+                - hosts/h2_interfaces:/etc/network/interfaces
+    h3:
+            kind: linux
+            image: aninchat/host:v1
+            mgmt-ipv4: 192.168.122.53
+            exec:
+                - sleep 5
+                - sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=0
+                - ip route add 10.11.1.0/24 via 10.11.2.1
+                - ip route add 10.12.1.0/24 via 10.11.2.1
+                - ip route add 10.12.2.0/24 via 10.11.2.1
+            binds:
+                - hosts/h3_interfaces:/etc/network/interfaces
+    h4:
+            kind: linux
+            image: aninchat/host:v1
+            mgmt-ipv4: 192.168.122.54
+            exec:
+                - sleep 5
+                - sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=0
+                - ip route add 10.11.1.0/24 via 10.12.2.1
+                - ip route add 10.11.2.0/24 via 10.12.2.1
+                - ip route add 10.12.1.0/24 via 10.12.2.1
+            binds:
+                - hosts/h4_interfaces:/etc/network/interfaces
+    h5:
+            kind: linux
+            image: aninchat/host:v1
+            mgmt-ipv4: 192.168.122.55
+            exec:
+                - sleep 5
+                - sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=0
+                - ip route add 10.11.2.0/24 via 10.11.1.1
+                - ip route add 10.12.1.0/24 via 10.11.1.1
+                - ip route add 10.12.2.0/24 via 10.11.1.1
+            binds:
+                - hosts/h5_interfaces:/etc/network/interfaces
+    h6:
+            kind: linux
+            image: aninchat/host:v1
+            mgmt-ipv4: 192.168.122.56
+            exec:
+                - sleep 5
+                - sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=0
+                - ip route add 10.11.1.0/24 via 10.12.2.1
+                - ip route add 10.11.2.0/24 via 10.12.2.1
+                - ip route add 10.12.1.0/24 via 10.12.2.1
+            binds:
+                - hosts/h6_interfaces:/etc/network/interfaces
+    h7:
+            kind: linux
+            image: aninchat/host:v1
+            mgmt-ipv4: 192.168.122.57
+            exec:
+                - sleep 5
+                - sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=0
+                - ip route add 10.11.2.0/24 via 10.11.1.1
+                - ip route add 10.12.1.0/24 via 10.11.1.1
+                - ip route add 10.12.2.0/24 via 10.11.1.1
+            binds:
+                - hosts/h7_interfaces:/etc/network/interfaces
+    h8:
+            kind: linux
+            image: aninchat/host:v1
+            mgmt-ipv4: 192.168.122.58
+            exec:
+                - sleep 5
+                - sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=0
+                - ip route add 10.11.1.0/24 via 10.12.2.1
+                - ip route add 10.11.2.0/24 via 10.12.2.1
+                - ip route add 10.12.1.0/24 via 10.12.2.1
+            binds:
+                - hosts/h8_interfaces:/etc/network/interfaces
+    h9:
+            kind: linux
+            image: aninchat/host:v1
+            mgmt-ipv4: 192.168.122.59
+            exec:
+                - sleep 5
+                - sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=0
+                - ip route add 10.11.2.0/24 via 10.11.1.1
+                - ip route add 10.12.1.0/24 via 10.11.1.1
+                - ip route add 10.12.2.0/24 via 10.11.1.1
+            binds:
+                - hosts/h9_interfaces:/etc/network/interfaces
+  links:
+          - endpoints: ["leaf4:eth1", "spine1:eth1"]
+          - endpoints: ["leaf4:eth2", "spine2:eth1"]
+          - endpoints: ["leaf5:eth1", "spine1:eth2"]
+          - endpoints: ["leaf5:eth2", "spine2:eth2"]
+          - endpoints: ["leaf2:eth1", "spine1:eth3"]
+          - endpoints: ["leaf2:eth2", "spine2:eth3"]
+          - endpoints: ["leaf3:eth1", "spine1:eth4"]
+          - endpoints: ["leaf3:eth2", "spine2:eth4"]
+          - endpoints: ["leaf1:eth1", "spine1:eth5"]
+          - endpoints: ["leaf1:eth2", "spine2:eth5"]
+          - endpoints: ["leaf1:eth3", "h1:eth1"]
+          - endpoints: ["leaf1:eth4", "h2:eth1"]
+          - endpoints: ["leaf2:eth4", "h3:eth1"]
+          - endpoints: ["leaf2:eth5", "h4:eth1"]
+          - endpoints: ["leaf3:eth5", "h4:eth2"]
+          - endpoints: ["leaf2:eth6", "h5:eth1"]
+          - endpoints: ["leaf3:eth6", "h5:eth2"]
+          - endpoints: ["leaf3:eth3", "h6:eth1"]
+          - endpoints: ["leaf2:eth3", "h7:eth1"]
+          - endpoints: ["leaf3:eth4", "h7:eth2"]
+          - endpoints: ["leaf4:eth4", "h8:eth1"]
+          - endpoints: ["leaf5:eth4", "h8:eth2"]
+          - endpoints: ["leaf4:eth5", "h9:eth1"]
+          - endpoints: ["leaf5:eth5", "h9:eth2"]
