@@ -9,7 +9,8 @@ terraform {
 ## provider details
 
 provider "apstra" {
-    url = "https://admin:Juniper!123@192.168.122.253:443"
+    ## UPDATE WITH YOUR OWN CREDENTIALS
+    url = "https://admin:<PASSWORD>@<APSTRA IP ADDRESS>:443"
     tls_validation_disabled = true
     blueprint_mutex_enabled = false
     # experimental = true
