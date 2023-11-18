@@ -24,9 +24,9 @@ resource "apstra_datacenter_blueprint" "mgmt_bp" {
 
 locals {
   blueprints = [
-    apstra_datacenter_blueprint.gpu_bp,
     apstra_datacenter_blueprint.mgmt_bp,
     apstra_datacenter_blueprint.storage_bp,
+    apstra_datacenter_blueprint.gpu_bp,
   ]
 
   asn_pool_roles = ["spine_asns", "leaf_asns"]
