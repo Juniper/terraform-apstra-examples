@@ -2,7 +2,16 @@
 # Instantiate a blueprints from the previously created templates
 #
 
-
+data "local_file" "l" {
+  filename = "devices.csv"
+}
+locals {
+  devs = csvdecode(data.local_file.l.content)
+  dev_map = tomap({
+    for d in local.devs:
+      replace(d["Apstra Device Name"], "-", "_")=>d["Serial number"]
+  })
+}
 resource "apstra_datacenter_blueprint" "gpu_bp" {
   name        = "Backend GPU Fabric"
   template_id = var.all_qfx_backend ? apstra_template_rack_based.ai_cluster_gpus_medium.id : apstra_template_rack_based.ai_cluster_gpus_large.id
@@ -24,9 +33,9 @@ resource "apstra_datacenter_blueprint" "mgmt_bp" {
 
 locals {
   blueprints = [
-    apstra_datacenter_blueprint.gpu_bp,
     apstra_datacenter_blueprint.mgmt_bp,
     apstra_datacenter_blueprint.storage_bp,
+    apstra_datacenter_blueprint.gpu_bp,
   ]
 
   asn_pool_roles = ["spine_asns", "leaf_asns"]
@@ -89,9 +98,8 @@ resource "apstra_datacenter_device_allocation" "frontend_spines" {
   blueprint_id             = apstra_datacenter_blueprint.mgmt_bp.id
   initial_interface_map_id = apstra_interface_map.ai_spine_32x400.id
   node_name                = "spine${count.index + 1}"
-  # commenting out the deploy_mode as this will block the below BP deploy/commit
-  # unless device system IDs are also provided which we will add later
-  #deploy_mode              = "deploy"
+  device_key               = contains(keys(local.dev_map), "spine${count.index + 1}")?local.dev_map["spine${count.index + 1}"]:null
+  deploy_mode              = contains(keys(local.dev_map), "spine${count.index + 1}")?"deploy":null
 }
 
 resource "apstra_datacenter_device_allocation" "storage_spines" {
@@ -99,7 +107,8 @@ resource "apstra_datacenter_device_allocation" "storage_spines" {
   blueprint_id             = apstra_datacenter_blueprint.storage_bp.id
   initial_interface_map_id = apstra_interface_map.ai_spine_32x400.id
   node_name                = "spine${count.index + 1}"
-  #  deploy_mode              = "deploy"
+  device_key               = contains(keys(local.dev_map), "spine${count.index + 1}")?local.dev_map["spine${count.index + 1}"]:null
+  deploy_mode              = contains(keys(local.dev_map), "spine${count.index + 1}")?"deploy":null
 }
 
 resource "apstra_datacenter_device_allocation" "gpus_spines" {
@@ -107,6 +116,8 @@ resource "apstra_datacenter_device_allocation" "gpus_spines" {
   blueprint_id             = apstra_datacenter_blueprint.gpu_bp.id
   initial_interface_map_id = var.all_qfx_backend ? apstra_interface_map.ai_spine_64x400.id : apstra_interface_map.ai_spine_ptx10008_72x400.id
   node_name                = "spine${count.index + 1}"
+  device_key               = contains(keys(local.dev_map), "spine${count.index + 1}")?local.dev_map["spine${count.index + 1}"]:null
+  deploy_mode              = contains(keys(local.dev_map), "spine${count.index + 1}")?"deploy":null
   #  deploy_mode              = "deploy"
 }
 
@@ -117,14 +128,16 @@ resource "apstra_datacenter_device_allocation" "frontend_leafs1" {
   blueprint_id             = apstra_datacenter_blueprint.mgmt_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_64x100.id
   node_name                = format("%s_001_leaf1", replace(lower(apstra_rack_type.frontend_mgmt_ai.name), "-", "_"))
-  #  deploy_mode              = "deploy"
+  device_key               = contains(keys(local.dev_map), format("%s_001_leaf1", replace(lower(apstra_rack_type.frontend_mgmt_ai.name), "-", "_")))?local.dev_map[format("%s_001_leaf1", replace(lower(apstra_rack_type.frontend_mgmt_ai.name), "-", "_"))]:null
+  deploy_mode              = contains(keys(local.dev_map), format("%s_001_leaf1", replace(lower(apstra_rack_type.frontend_mgmt_ai.name), "-", "_")))?"deploy":null
 }
 
 resource "apstra_datacenter_device_allocation" "frontend_leafs2" {
   blueprint_id             = apstra_datacenter_blueprint.mgmt_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_64x100.id
   node_name                = format("%s_001_leaf1", replace(lower(apstra_rack_type.frontend_mgmt_weka.name), "-", "_"))
-  #  deploy_mode              = "deploy"
+  device_key               = contains(keys(local.dev_map), format("%s_001_leaf1", replace(lower(apstra_rack_type.frontend_mgmt_weka.name), "-", "_")))?local.dev_map[format("%s_001_leaf1", replace(lower(apstra_rack_type.frontend_mgmt_weka.name), "-", "_"))]:null
+  deploy_mode              = contains(keys(local.dev_map), format("%s_001_leaf1", replace(lower(apstra_rack_type.frontend_mgmt_weka.name), "-", "_")))?"deploy":null
 }
 
 resource "apstra_datacenter_device_allocation" "storage_leafs1" {
@@ -132,7 +145,8 @@ resource "apstra_datacenter_device_allocation" "storage_leafs1" {
   blueprint_id             = apstra_datacenter_blueprint.storage_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_32x200.id
   node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.storage_ai.name), "-", "_"), count.index + 1)
-  #  deploy_mode              = "deploy"
+  device_key               = contains(keys(local.dev_map), format("%s_001_leaf1", replace(lower(apstra_rack_type.storage_ai.name), "-", "_")))?local.dev_map[format("%s_001_leaf1", replace(lower(apstra_rack_type.storage_ai.name), "-", "_"))]:null
+  deploy_mode              = contains(keys(local.dev_map), format("%s_001_leaf1", replace(lower(apstra_rack_type.storage_ai.name), "-", "_")))?"deploy":null
 }
 
 resource "apstra_datacenter_device_allocation" "storage_leafs2" {
@@ -140,7 +154,8 @@ resource "apstra_datacenter_device_allocation" "storage_leafs2" {
   blueprint_id             = apstra_datacenter_blueprint.storage_bp.id
   initial_interface_map_id = apstra_interface_map.ai_leaf_16x400_32x200.id
   node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.storage_weka.name), "-", "_"), count.index + 1)
-  #  deploy_mode              = "deploy"
+  device_key               = contains(keys(local.dev_map), format("%s_001_leaf1", replace(lower(apstra_rack_type.storage_weka.name), "-", "_")))?local.dev_map[format("%s_001_leaf1", replace(lower(apstra_rack_type.storage_weka.name), "-", "_"))]:null
+  deploy_mode              = contains(keys(local.dev_map), format("%s_001_leaf1", replace(lower(apstra_rack_type.storage_weka.name), "-", "_")))?"deploy":null
 }
 
 resource "apstra_datacenter_device_allocation" "gpu_leafs1" {
@@ -148,7 +163,8 @@ resource "apstra_datacenter_device_allocation" "gpu_leafs1" {
   blueprint_id             = apstra_datacenter_blueprint.gpu_bp.id
   initial_interface_map_id = apstra_interface_map.ai_lab_leaf_small.id
   node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_sml.name), "-", "_"), count.index + 1)
-  #  deploy_mode              = "deploy"
+  device_key               = contains(keys(local.dev_map), format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_sml.name), "-", "_"), count.index + 1))?local.dev_map[format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_sml.name), "-", "_"), count.index + 1)]:null
+  deploy_mode              = contains(keys(local.dev_map), format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_sml.name), "-", "_"), count.index + 1))?"deploy":null
 }
 
 resource "apstra_datacenter_device_allocation" "gpu_leafs2" {
@@ -156,7 +172,8 @@ resource "apstra_datacenter_device_allocation" "gpu_leafs2" {
   blueprint_id             = apstra_datacenter_blueprint.gpu_bp.id
   initial_interface_map_id = apstra_interface_map.ai_lab_leaf_medium.id
   node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_med.name), "-", "_"), count.index + 1)
-  #  deploy_mode              = "deploy"
+  device_key               = contains(keys(local.dev_map), format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_med.name), "-", "_"), count.index + 1))?local.dev_map[format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_med.name), "-", "_"), count.index + 1)]:null
+  deploy_mode              = contains(keys(local.dev_map), format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_med.name), "-", "_"), count.index + 1))?"deploy":null
 }
 
 

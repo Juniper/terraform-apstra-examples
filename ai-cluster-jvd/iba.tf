@@ -146,6 +146,94 @@ resource "apstra_blueprint_iba_widget" "w_east_west_traffic" {
   description  = "made from terraform"
 }
 
+resource "apstra_blueprint_iba_probe" "p_east_west_traffic_gpu_small" {
+  blueprint_id        = apstra_datacenter_blueprint.gpu_bp.id
+  predefined_probe_id = "eastwest_traffic"
+  probe_config        = jsonencode(
+    {
+      "label" : "East/West Traffic",
+      "average_period" : 60,
+      "history_total_duration" : 43200,
+      "external_router_tags" : ["obviously_fake_tag"],
+      "server_tags"          : ["gpu_small"]
+    }
+  )
+}
+
+resource "apstra_blueprint_iba_widget" "w_east_west_traffic_gpu_small" {
+  blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
+  name         = "East/West traffic"
+  probe_id     = apstra_blueprint_iba_probe.p_east_west_traffic_gpu_small.id
+  stage        = "eastwest_traffic_history"
+  description  = "made from terraform"
+}
+
+resource "apstra_blueprint_iba_probe" "p_east_west_traffic_gpu_medium" {
+  blueprint_id        = apstra_datacenter_blueprint.gpu_bp.id
+  predefined_probe_id = "eastwest_traffic"
+  probe_config        = jsonencode(
+    {
+      "label" : "East/West Traffic",
+      "average_period" : 60,
+      "history_total_duration" : 43200,
+      "external_router_tags" : ["obviously_fake_tag"],
+      "server_tags"          : ["gpu_medium"]
+    }
+  )
+}
+
+resource "apstra_blueprint_iba_widget" "w_east_west_traffic_gpu_medium" {
+  blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
+  name         = "East/West traffic"
+  probe_id     = apstra_blueprint_iba_probe.p_east_west_traffic_gpu_medium.id
+  stage        = "eastwest_traffic_history"
+  description  = "made from terraform"
+}
+
+resource "apstra_blueprint_iba_probe" "p_east_west_traffic_gpu_a100" {
+  blueprint_id        = apstra_datacenter_blueprint.gpu_bp.id
+  predefined_probe_id = "eastwest_traffic"
+  probe_config        = jsonencode(
+    {
+      "label" : "East/West Traffic",
+      "average_period" : 60,
+      "history_total_duration" : 43200,
+      "external_router_tags" : ["obviously_fake_tag"],
+      "server_tags"          : ["gpu_a100"]
+    }
+  )
+}
+
+resource "apstra_blueprint_iba_widget" "w_east_west_traffic_gpu_a100" {
+  blueprint_id        = apstra_datacenter_blueprint.gpu_bp.id
+  name         = "East/West traffic"
+  probe_id     = apstra_blueprint_iba_probe.p_east_west_traffic_gpu_a100.id
+  stage        = "eastwest_traffic_history"
+  description  = "made from terraform"
+}
+
+resource "apstra_blueprint_iba_probe" "p_east_west_traffic_gpu_h100" {
+  blueprint_id        = apstra_datacenter_blueprint.gpu_bp.id
+  predefined_probe_id = "eastwest_traffic"
+  probe_config        = jsonencode(
+    {
+      "label" : "East/West Traffic",
+      "average_period" : 60,
+      "history_total_duration" : 43200,
+      "external_router_tags" : ["obviously_fake_tag"],
+      "server_tags"          : ["gpu_h100"]
+    }
+  )
+}
+
+resource "apstra_blueprint_iba_widget" "w_east_west_traffic_gpu_h100" {
+  blueprint_id        = apstra_datacenter_blueprint.gpu_bp.id
+  name         = "East/West traffic"
+  probe_id     = apstra_blueprint_iba_probe.p_east_west_traffic_gpu_h100.id
+  stage        = "eastwest_traffic_history"
+  description  = "made from terraform"
+}
+
 resource "apstra_blueprint_iba_probe" "p_packet_discard_percentage" {
   count               = length(local.blueprints)
   blueprint_id        = local.blueprints[count.index].id
@@ -170,7 +258,7 @@ resource "apstra_blueprint_iba_widget" "w_packet_discard_percentage" {
 }
 
 resource "apstra_blueprint_iba_dashboard" "b" {
-  count        = length(local.blueprints)
+  count        = length(local.blueprints) - 1
   blueprint_id = local.blueprints[count.index].id
   default      = true
   description  = "AI Dashboard with TF"
@@ -192,3 +280,28 @@ resource "apstra_blueprint_iba_dashboard" "b" {
   ])
 }
 
+resource "apstra_blueprint_iba_dashboard" "db_gpu" {
+  blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
+  default      = true
+  description  = "AI Dashboard with TF"
+  name         = "AI Dashboard with TF"
+  widget_grid  = tolist([
+    tolist([
+      apstra_blueprint_iba_widget.w_device_health_high_cpu[2].id,
+      apstra_blueprint_iba_widget.w_device_health_high_memory[2].id,
+      apstra_blueprint_iba_widget.w_device_traffic[2].id,
+      apstra_blueprint_iba_widget.w_bandwidth_utilization[2].id,
+    ]), tolist([
+      apstra_blueprint_iba_widget.w_ecmp_imbalance_fabric[2].id,
+      apstra_blueprint_iba_widget.w_hot_cold_interfaces_cold_leaves[2].id,
+      apstra_blueprint_iba_widget.w_hot_cold_interfaces_hot_leaves[2].id,
+      apstra_blueprint_iba_widget.w_packet_discard_percentage[2].id,
+    ]), tolist([
+      apstra_blueprint_iba_widget.w_east_west_traffic[2].id,
+      apstra_blueprint_iba_widget.w_east_west_traffic_gpu_a100.id,
+      apstra_blueprint_iba_widget.w_east_west_traffic_gpu_h100.id,
+      apstra_blueprint_iba_widget.w_east_west_traffic_gpu_small.id,
+      apstra_blueprint_iba_widget.w_east_west_traffic_gpu_medium.id,
+    ]),
+  ])
+}
