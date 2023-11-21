@@ -114,8 +114,9 @@ commands will detect it and remind you to do so if necessary.
 ### Plan
 
 As a next step, type "terraform plan" from the same directory as the configs.
-Terraform will reach out to the apstra, compute the difference between what is already there and what hte configs ask
-for.
+
+Terraform will reach out to the Apstra instance, compute the difference between the existing running state and the updated configs, and output the result.
+
 ```
 % terraform plan
 
