@@ -162,7 +162,7 @@ resource "apstra_blueprint_iba_probe" "p_east_west_traffic_gpu_small" {
 
 resource "apstra_blueprint_iba_widget" "w_east_west_traffic_gpu_small" {
   blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
-  name         = "East/West traffic"
+  name         = "East/West Traffic Small Racks"
   probe_id     = apstra_blueprint_iba_probe.p_east_west_traffic_gpu_small.id
   stage        = "eastwest_traffic_history"
   description  = "made from terraform"
@@ -184,7 +184,7 @@ resource "apstra_blueprint_iba_probe" "p_east_west_traffic_gpu_medium" {
 
 resource "apstra_blueprint_iba_widget" "w_east_west_traffic_gpu_medium" {
   blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
-  name         = "East/West traffic"
+  name         = "East/West traffic on GPU Medium Racks"
   probe_id     = apstra_blueprint_iba_probe.p_east_west_traffic_gpu_medium.id
   stage        = "eastwest_traffic_history"
   description  = "made from terraform"
@@ -206,7 +206,7 @@ resource "apstra_blueprint_iba_probe" "p_east_west_traffic_gpu_a100" {
 
 resource "apstra_blueprint_iba_widget" "w_east_west_traffic_gpu_a100" {
   blueprint_id        = apstra_datacenter_blueprint.gpu_bp.id
-  name         = "East/West traffic"
+  name         = "East/West traffic for A100 Servers"
   probe_id     = apstra_blueprint_iba_probe.p_east_west_traffic_gpu_a100.id
   stage        = "eastwest_traffic_history"
   description  = "made from terraform"
@@ -228,7 +228,7 @@ resource "apstra_blueprint_iba_probe" "p_east_west_traffic_gpu_h100" {
 
 resource "apstra_blueprint_iba_widget" "w_east_west_traffic_gpu_h100" {
   blueprint_id        = apstra_datacenter_blueprint.gpu_bp.id
-  name         = "East/West traffic"
+  name         = "East/West traffic for H100 Servers"
   probe_id     = apstra_blueprint_iba_probe.p_east_west_traffic_gpu_h100.id
   stage        = "eastwest_traffic_history"
   description  = "made from terraform"
@@ -262,7 +262,7 @@ resource "apstra_blueprint_iba_dashboard" "b" {
   blueprint_id = local.blueprints[count.index].id
   default      = true
   description  = "AI Dashboard with TF"
-  name         = "AI Dashboard with TF"
+  name         = "AI Dashboard Device Health"
   widget_grid  = tolist([
     tolist([
       apstra_blueprint_iba_widget.w_device_health_high_cpu[count.index].id,
@@ -284,23 +284,36 @@ resource "apstra_blueprint_iba_dashboard" "db_gpu" {
   blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
   default      = true
   description  = "AI Dashboard with TF"
-  name         = "AI Dashboard with TF"
+  name         = "AI Dashboard Device Health"
   widget_grid  = tolist([
     tolist([
       apstra_blueprint_iba_widget.w_device_health_high_cpu[2].id,
       apstra_blueprint_iba_widget.w_device_health_high_memory[2].id,
       apstra_blueprint_iba_widget.w_device_traffic[2].id,
-      apstra_blueprint_iba_widget.w_bandwidth_utilization[2].id,
     ]), tolist([
       apstra_blueprint_iba_widget.w_ecmp_imbalance_fabric[2].id,
+      apstra_blueprint_iba_widget.w_packet_discard_percentage[2].id,
+      apstra_blueprint_iba_widget.w_bandwidth_utilization[2].id,
+    ]), tolist([
       apstra_blueprint_iba_widget.w_hot_cold_interfaces_cold_leaves[2].id,
       apstra_blueprint_iba_widget.w_hot_cold_interfaces_hot_leaves[2].id,
-      apstra_blueprint_iba_widget.w_packet_discard_percentage[2].id,
-    ]), tolist([
-      apstra_blueprint_iba_widget.w_east_west_traffic[2].id,
+
+    ]),
+  ])
+}
+
+resource "apstra_blueprint_iba_dashboard" "db_gpu_east_west" {
+  blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
+  default      = true
+  description  = "AI Dashboard for GPU East West Traffic"
+  name         = "AI Dashboard Device Health"
+  widget_grid  = tolist([
+    tolist([
       apstra_blueprint_iba_widget.w_east_west_traffic_gpu_a100.id,
       apstra_blueprint_iba_widget.w_east_west_traffic_gpu_h100.id,
+    ]), tolist([
       apstra_blueprint_iba_widget.w_east_west_traffic_gpu_small.id,
+    ]), tolist([
       apstra_blueprint_iba_widget.w_east_west_traffic_gpu_medium.id,
     ]),
   ])
