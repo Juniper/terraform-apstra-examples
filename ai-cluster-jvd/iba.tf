@@ -251,6 +251,7 @@ resource "apstra_blueprint_iba_dashboard" "b" {
   blueprint_id = local.blueprints[count.index].id
   default      = true
   name         = "Device Health"
+  description = "Device Health Dashboard"
   widget_grid  = tolist([
     tolist([
       apstra_blueprint_iba_widget.w_device_health_high_cpu[count.index].id,
@@ -272,6 +273,7 @@ resource "apstra_blueprint_iba_dashboard" "db_gpu" {
   blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
   default      = true
   name         = "Device Health"
+  description = "Device Health Dashboard"
   widget_grid  = tolist([
     tolist([
       apstra_blueprint_iba_widget.w_device_health_high_cpu[2].id,

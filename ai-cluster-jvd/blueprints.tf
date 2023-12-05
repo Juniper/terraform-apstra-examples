@@ -158,7 +158,7 @@ resource "apstra_datacenter_device_allocation" "storage_leafs2" {
   deploy_mode              = contains(keys(local.dev_map), format("%s_001_leaf1", replace(lower(apstra_rack_type.storage_weka.name), "-", "_")))?"deploy":null
 }
 
-resource "apstra_datacenter_device_allocation" "gpu_leafs1" {
+resource "apstra_datacenter_device_allocation" "gpu_small_leafs" {
   count                    = 8
   blueprint_id             = apstra_datacenter_blueprint.gpu_bp.id
   initial_interface_map_id = apstra_interface_map.ai_lab_leaf_small.id
@@ -167,7 +167,7 @@ resource "apstra_datacenter_device_allocation" "gpu_leafs1" {
   deploy_mode              = contains(keys(local.dev_map), format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_sml.name), "-", "_"), count.index + 1))?"deploy":null
 }
 
-resource "apstra_datacenter_device_allocation" "gpu_leafs2" {
+resource "apstra_datacenter_device_allocation" "gpu_med_leafs" {
   count                    = 8
   blueprint_id             = apstra_datacenter_blueprint.gpu_bp.id
   initial_interface_map_id = apstra_interface_map.ai_lab_leaf_medium.id
@@ -263,8 +263,8 @@ resource "apstra_blueprint_deployment" "gpu_bp_deploy" {
   blueprint_id = apstra_datacenter_blueprint.gpu_bp.id
   depends_on = [
     apstra_tag.host_tags,
-    apstra_datacenter_device_allocation.gpu_leafs1,
-    apstra_datacenter_device_allocation.gpu_leafs2,
+    apstra_datacenter_device_allocation.gpu_small_leafs,
+    apstra_datacenter_device_allocation.gpu_med_leafs,
     apstra_datacenter_device_allocation.gpus_spines,
     apstra_datacenter_resource_pool_allocation.asns,
     apstra_datacenter_resource_pool_allocation.ipv4,
