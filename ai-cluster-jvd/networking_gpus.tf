@@ -110,3 +110,4 @@ resource "apstra_datacenter_resource_pool_allocation" "gpu_subnet_alloc" {
   pool_ids     = [apstra_ipv4_pool.gpus_subnet.id]
   role         = "to_generic_link_ips"
 }
+
