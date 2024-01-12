@@ -107,7 +107,7 @@ data "apstra_datacenter_interfaces_by_link_tag" "frontend_a100_links" {
   tags         = ["frontend_a100"]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "frontend_assign_ct_a100" {
+resource "apstra_datacenter_connectivity_templates_assignment" "frontend_assign_ct_a100" {
   count                = apstra_rack_type.frontend_mgmt_ai.generic_systems.hgx-mgmt.count
   blueprint_id         = apstra_datacenter_blueprint.mgmt_bp.id
   application_point_id = tolist(data.apstra_datacenter_interfaces_by_link_tag.frontend_a100_links.ids)[count.index]
@@ -121,7 +121,7 @@ data "apstra_datacenter_interfaces_by_link_tag" "frontend_h100_links" {
   tags         = ["frontend_h100"]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "frontend_assign_ct_h100" {
+resource "apstra_datacenter_connectivity_templates_assignment" "frontend_assign_ct_h100" {
   count                = apstra_rack_type.frontend_mgmt_ai.generic_systems.dgx-mgmt.count
   blueprint_id         = apstra_datacenter_blueprint.mgmt_bp.id
   application_point_id = tolist(data.apstra_datacenter_interfaces_by_link_tag.frontend_h100_links.ids)[count.index]
@@ -135,7 +135,7 @@ data "apstra_datacenter_interfaces_by_link_tag" "frontend_headend_links" {
   tags         = ["frontend_headend"]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "frontend_assign_ct_headend" {
+resource "apstra_datacenter_connectivity_templates_assignment" "frontend_assign_ct_headend" {
   count                = apstra_rack_type.frontend_mgmt_ai.generic_systems.headend_servers.count
   blueprint_id         = apstra_datacenter_blueprint.mgmt_bp.id
   application_point_id = tolist(data.apstra_datacenter_interfaces_by_link_tag.frontend_headend_links.ids)[count.index]
@@ -149,7 +149,7 @@ data "apstra_datacenter_interfaces_by_link_tag" "frontend_weka_links" {
   tags         = ["frontend_weka"]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "frontend_assign_ct_weka" {
+resource "apstra_datacenter_connectivity_templates_assignment" "frontend_assign_ct_weka" {
   count                = apstra_rack_type.frontend_mgmt_weka.generic_systems.weka_storage.count
   blueprint_id         = apstra_datacenter_blueprint.mgmt_bp.id
   application_point_id = tolist(data.apstra_datacenter_interfaces_by_link_tag.frontend_weka_links.ids)[count.index]

@@ -70,12 +70,14 @@ resource "apstra_datacenter_virtual_network" "gpu_med_leafs" {
 
 data "apstra_datacenter_ct_virtual_network_single" "gpu_med_leafs" {
   count = length(apstra_datacenter_device_allocation.gpu_med_leafs)
+  //count = 8
   vn_id    = apstra_datacenter_virtual_network.gpu_med_leafs[count.index].id
   name     = apstra_datacenter_virtual_network.gpu_med_leafs[count.index].name
 }
 
 resource "apstra_datacenter_connectivity_template" "gpu_med_leafs" {
   count = length(apstra_datacenter_virtual_network.gpu_med_leafs)
+  //count = 8
   blueprint_id  = apstra_datacenter_virtual_network.gpu_med_leafs[count.index].blueprint_id
   name         = apstra_datacenter_virtual_network.gpu_med_leafs[count.index].name
   description  = apstra_datacenter_virtual_network.gpu_med_leafs[count.index].ipv4_subnet
@@ -99,60 +101,68 @@ data "apstra_datacenter_interfaces_by_system" "gpu_med_links_by_leafs" {
 
 
 locals {
-  small_system_to_if_ids = {
-    for l in data.apstra_datacenter_interfaces_by_system.gpu_small_links_by_leafs:
-      l.system_id=>[for k,v in l.if_map : v if k!="et-0/0/0" && k!="et-0/0/1"&& k!="et-0/0/2"&& k!="et-0/0/3"]
-  }
-  small_if_to_system_ids = transpose(local.small_system_to_if_ids)
-  small_if_to_system_id = {
-    for k, v in local.small_if_to_system_ids: k=> one(v) if !startswith(k, "gpu_backend")
-  }
+#  small_system_to_if_ids = {
+#    for l in data.apstra_datacenter_interfaces_by_system.gpu_small_links_by_leafs:
+#      l.system_id=>[for k,v in l.if_map : v if k!="et-0/0/0" && k!="et-0/0/1"&& k!="et-0/0/2"&& k!="et-0/0/3"]
+#  }
+#
+#  small_if_to_system_ids = transpose(local.small_system_to_if_ids)
+#  small_if_to_system_id = {
+#    for k, v in local.small_if_to_system_ids: k=> one(v) if !startswith(k, "gpu_backend")
+#  }
   small_switch_to_ct = {
     for d in apstra_datacenter_device_allocation.gpu_small_leafs:
         d.node_id => apstra_datacenter_connectivity_template.gpu_small_leafs[index(apstra_datacenter_device_allocation.gpu_small_leafs, d)].id
   }
-
-  med_system_to_if_ids = {
-    for l in data.apstra_datacenter_interfaces_by_system.gpu_med_links_by_leafs:
-    l.system_id=>[for k,v in l.if_map : v if k!="et-0/0/0" && k!="et-0/0/1"&& k!="et-0/0/2"&& k!="et-0/0/3"]
-  }
-  med_if_to_system_ids = transpose(local.med_system_to_if_ids)
-  med_if_to_system_id = {
-    for k, v in local.med_if_to_system_ids: k=> one(v) if !startswith(k, "gpu_backend")
-  }
+#
+#  med_system_to_if_ids = {
+#    for l in data.apstra_datacenter_interfaces_by_system.gpu_med_links_by_leafs:
+#    l.system_id=>[for k,v in l.if_map : v if k!="et-0/0/0" && k!="et-0/0/1"&& k!="et-0/0/2"&& k!="et-0/0/3"]
+#  }
+#  med_if_to_system_ids = transpose(local.med_system_to_if_ids)
+#  med_if_to_system_id = {
+#    for k, v in local.med_if_to_system_ids: k=> one(v) if !startswith(k, "gpu_backend")
+#  }
   med_switch_to_ct = {
     for d in apstra_datacenter_device_allocation.gpu_med_leafs:
     d.node_id => apstra_datacenter_connectivity_template.gpu_med_leafs[index(apstra_datacenter_device_allocation.gpu_med_leafs, d)].id
   }
 
+  small_leaf_ifs = [
+    for l in data.apstra_datacenter_interfaces_by_system.gpu_small_links_by_leafs:
+      [for k,v in l.if_map : v if k!="et-0/0/0" && k!="et-0/0/1"&& k!="et-0/0/2"&& k!="et-0/0/3" && !startswith(v,"gpu_backend")]
+  ]
+
+  med_leaf_ifs = [
+    for l in data.apstra_datacenter_interfaces_by_system.gpu_med_links_by_leafs:
+      [for k,v in l.if_map : v if k!="et-0/0/0" && k!="et-0/0/1"&& k!="et-0/0/2"&& k!="et-0/0/3" && !startswith(v,"gpu_backend")]
+  ]
 
 }
-#resource "apstra_datacenter_connectivity_template_assignment" "gpu_small_assign_ct" {
-#  count = length(apstra_datacenter_virtual_network.gpu_small_leafs)
+
+resource "apstra_datacenter_connectivity_template_assignments" "gpu_small_assign_ct" {
+  count = local.count_small_leafs
+  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+  application_point_ids = local.small_leaf_ifs[count.index]  #List of interfaces on the switch
+  connectivity_template_id = apstra_datacenter_connectivity_template.gpu_small_leafs[count.index].id
+}
+
+
+resource "apstra_datacenter_connectivity_template_assignments" "gpu_med_assign_ct" {
+  count = local.count_med_leafs
+  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
+  application_point_ids = local.med_leaf_ifs[count.index]  #List of interfaces on the switch
+  connectivity_template_id = apstra_datacenter_connectivity_template.gpu_med_leafs[count.index].id
+}
+#
+#resource "apstra_datacenter_connectivity_template_assignment" "gpu_med_assign_ct" {
+#  for_each = local.med_if_to_system_id
 #  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
-#  application_point_id = data.apstra_datacenter_interfaces_by_system.gpu_small_links_by_leafs[count.index].if_map.values
+#  application_point_id = each.key
 #  connectivity_template_ids = [
-#    apstra_datacenter_connectivity_template.gpu_small_leafs[count.index]
+#    local.med_switch_to_ct[each.value]
 #  ]
 #}
-
-resource "apstra_datacenter_connectivity_template_assignment" "gpu_small_assign_ct" {
-  for_each = local.small_if_to_system_id
-  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
-  application_point_id = each.key
-  connectivity_template_ids = [
-    local.small_switch_to_ct[each.value]
-  ]
-}
-
-resource "apstra_datacenter_connectivity_template_assignment" "gpu_med_assign_ct" {
-  for_each = local.med_if_to_system_id
-  blueprint_id         = apstra_datacenter_blueprint.gpu_bp.id
-  application_point_id = each.key
-  connectivity_template_ids = [
-    local.med_switch_to_ct[each.value]
-  ]
-}
 #
 # Assign the backend gpu fabric CTs
 #

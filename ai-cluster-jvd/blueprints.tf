@@ -50,6 +50,10 @@ locals {
   ipv4_pool_roles      = ["spine_loopback_ips", "leaf_loopback_ips", "spine_leaf_link_ips"]
   ipv4_block           = "10.0.0.0/8"
   ipv4_pool_extra_bits = 16
+
+  count_small_leafs = 8
+  count_med_leafs = 8
+
 }
 
 resource "apstra_asn_pool" "all" {
@@ -159,7 +163,7 @@ resource "apstra_datacenter_device_allocation" "storage_leafs2" {
 }
 
 resource "apstra_datacenter_device_allocation" "gpu_small_leafs" {
-  count                    = 8
+  count                    = local.count_small_leafs
   blueprint_id             = apstra_datacenter_blueprint.gpu_bp.id
   initial_interface_map_id = apstra_interface_map.ai_lab_leaf_small.id
   node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_sml.name), "-", "_"), count.index + 1)
@@ -168,7 +172,7 @@ resource "apstra_datacenter_device_allocation" "gpu_small_leafs" {
 }
 
 resource "apstra_datacenter_device_allocation" "gpu_med_leafs" {
-  count                    = 8
+  count                    = local.count_med_leafs
   blueprint_id             = apstra_datacenter_blueprint.gpu_bp.id
   initial_interface_map_id = apstra_interface_map.ai_lab_leaf_medium.id
   node_name                = format("%s_001_leaf%s", replace(lower(apstra_rack_type.gpu_backend_med.name), "-", "_"), count.index + 1)
@@ -245,10 +249,10 @@ resource "apstra_blueprint_deployment" "mgmt_bp_deploy" {
     apstra_datacenter_device_allocation.frontend_spines,
     apstra_datacenter_resource_pool_allocation.asns,
     apstra_datacenter_resource_pool_allocation.ipv4,
-    apstra_datacenter_connectivity_template_assignment.frontend_assign_ct_headend,
-    apstra_datacenter_connectivity_template_assignment.frontend_assign_ct_a100,
-    apstra_datacenter_connectivity_template_assignment.frontend_assign_ct_h100,
-    apstra_datacenter_connectivity_template_assignment.frontend_assign_ct_weka
+    apstra_datacenter_connectivity_templates_assignment.frontend_assign_ct_headend,
+    apstra_datacenter_connectivity_templates_assignment.frontend_assign_ct_a100,
+    apstra_datacenter_connectivity_templates_assignment.frontend_assign_ct_h100,
+    apstra_datacenter_connectivity_templates_assignment.frontend_assign_ct_weka
   ]
 
   # Version is replaced using `text/template` method. Only predefined values
@@ -268,8 +272,8 @@ resource "apstra_blueprint_deployment" "gpu_bp_deploy" {
     apstra_datacenter_device_allocation.gpus_spines,
     apstra_datacenter_resource_pool_allocation.asns,
     apstra_datacenter_resource_pool_allocation.ipv4,
-    apstra_datacenter_connectivity_template_assignment.gpu_small_assign_ct,
-    apstra_datacenter_connectivity_template_assignment.gpu_med_assign_ct,
+    apstra_datacenter_connectivity_template_assignments.gpu_small_assign_ct,
+    apstra_datacenter_connectivity_template_assignments.gpu_med_assign_ct,
     apstra_datacenter_configlet.dlb_gpu,
     apstra_datacenter_configlet.dcqcn_gpu_spine,
     apstra_datacenter_configlet.dcqcn_gpu_leaf_small_dcqcn,
@@ -293,9 +297,9 @@ resource "apstra_blueprint_deployment" "storage_bp_deploy" {
     apstra_datacenter_device_allocation.storage_spines,
     apstra_datacenter_resource_pool_allocation.asns,
     apstra_datacenter_resource_pool_allocation.ipv4,
-    apstra_datacenter_connectivity_template_assignment.storage_assign_ct_weka,
-    apstra_datacenter_connectivity_template_assignment.storage_assign_ct_h100,
-    apstra_datacenter_connectivity_template_assignment.storage_assign_ct_a100,
+    apstra_datacenter_connectivity_templates_assignment.storage_assign_ct_weka,
+    apstra_datacenter_connectivity_templates_assignment.storage_assign_ct_h100,
+    apstra_datacenter_connectivity_templates_assignment.storage_assign_ct_a100,
     apstra_datacenter_resource_pool_allocation.storage_subnet_alloc,
     apstra_datacenter_configlet.dlb_storage,
     apstra_datacenter_configlet.dcqcn_storage_spine,

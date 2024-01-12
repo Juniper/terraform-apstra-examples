@@ -78,15 +78,15 @@ resource "apstra_blueprint_deployment" "dc1_deploy" {
     apstra_datacenter_connectivity_template.dc1_vn2_red_ct,
     apstra_datacenter_connectivity_template.dc1_vn1_blue_ct,
     apstra_datacenter_connectivity_template.dc1_vn2_blue_ct,
-    apstra_datacenter_connectivity_template_assignment.assign_ct_dc1_vn1_red_h1,
-    apstra_datacenter_connectivity_template_assignment.assign_ct_dc1_vn1_red_h5,
-    apstra_datacenter_connectivity_template_assignment.assign_ct_dc1_vn1_red_h7,
-    apstra_datacenter_connectivity_template_assignment.assign_ct_dc1_vn1_red_h9,
-    apstra_datacenter_connectivity_template_assignment.assign_ct_dc1_vn2_red_h3,
-    apstra_datacenter_connectivity_template_assignment.assign_ct_dc1_vn1_blue_h2,
-    apstra_datacenter_connectivity_template_assignment.assign_ct_dc1_vn2_blue_h4,
-    apstra_datacenter_connectivity_template_assignment.assign_ct_dc1_vn2_blue_h6,
-    apstra_datacenter_connectivity_template_assignment.assign_ct_dc1_vn2_blue_h8
+    apstra_datacenter_connectivity_templates_assignment.assign_ct_dc1_vn1_red_h1,
+    apstra_datacenter_connectivity_templates_assignment.assign_ct_dc1_vn1_red_h5,
+    apstra_datacenter_connectivity_templates_assignment.assign_ct_dc1_vn1_red_h7,
+    apstra_datacenter_connectivity_templates_assignment.assign_ct_dc1_vn1_red_h9,
+    apstra_datacenter_connectivity_templates_assignment.assign_ct_dc1_vn2_red_h3,
+    apstra_datacenter_connectivity_templates_assignment.assign_ct_dc1_vn1_blue_h2,
+    apstra_datacenter_connectivity_templates_assignment.assign_ct_dc1_vn2_blue_h4,
+    apstra_datacenter_connectivity_templates_assignment.assign_ct_dc1_vn2_blue_h6,
+    apstra_datacenter_connectivity_templates_assignment.assign_ct_dc1_vn2_blue_h8
   ]
 
   # Version is replaced using `text/template` method. Only predefined values
