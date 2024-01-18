@@ -5,11 +5,11 @@ locals {
 
   // Small Leaves start from 100.200.9.0/24 go to 100.200.16.0/24
   leaf_cidr_block_base_address_gpu_small_leafs   = "10.200.0.0"
-  leaf_cidr_block_base_address_gpu_small_leafs_start_network   = 9
+  leaf_cidr_block_base_address_gpu_small_leafs_start_network   = 8
 
   // Medium leaves start from 100.200.1.0/24 go to 10.200.8.0/24
   leaf_cidr_block_base_address_gpu_med_leafs   = "10.200.0.0"
-  leaf_cidr_block_base_address_gpu_med_leafs_start_network   = 1
+  leaf_cidr_block_base_address_gpu_med_leafs_start_network   = 0
 
   small_switch_to_ct = {
     for d in apstra_datacenter_device_allocation.gpu_small_leafs:
