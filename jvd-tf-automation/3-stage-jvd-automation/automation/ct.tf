@@ -120,7 +120,7 @@ data "apstra_datacenter_interfaces_by_link_tag" "h9_link" {
 # assign CT to application points i.e. the IDs that were determined from previous
 # data source that found interfaces by tags
 
-resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn1_red_h1" {
+resource "apstra_datacenter_connectivity_templates_assignment" "assign_ct_dc1_vn1_red_h1" {
   blueprint_id              = apstra_datacenter_blueprint.dc1_blueprint.id
   application_point_id      = one(data.apstra_datacenter_interfaces_by_link_tag.h1_link.ids)
   connectivity_template_ids = [
@@ -128,7 +128,7 @@ resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn1
     ]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn1_red_h5" {
+resource "apstra_datacenter_connectivity_templates_assignment" "assign_ct_dc1_vn1_red_h5" {
   blueprint_id              = apstra_datacenter_blueprint.dc1_blueprint.id
   application_point_id      = one(data.apstra_datacenter_interfaces_by_link_tag.h5_link.ids)
   connectivity_template_ids = [
@@ -136,7 +136,7 @@ resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn1
     ]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn1_red_h7" {
+resource "apstra_datacenter_connectivity_templates_assignment" "assign_ct_dc1_vn1_red_h7" {
   blueprint_id              = apstra_datacenter_blueprint.dc1_blueprint.id
   application_point_id      = one(data.apstra_datacenter_interfaces_by_link_tag.h7_link.ids)
   connectivity_template_ids = [
@@ -144,7 +144,7 @@ resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn1
     ]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn1_red_h9" {
+resource "apstra_datacenter_connectivity_templates_assignment" "assign_ct_dc1_vn1_red_h9" {
   blueprint_id              = apstra_datacenter_blueprint.dc1_blueprint.id
   application_point_id      = one(data.apstra_datacenter_interfaces_by_link_tag.h9_link.ids)
   connectivity_template_ids = [
@@ -152,7 +152,7 @@ resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn1
     ]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn2_red_h3" {
+resource "apstra_datacenter_connectivity_templates_assignment" "assign_ct_dc1_vn2_red_h3" {
   blueprint_id              = apstra_datacenter_blueprint.dc1_blueprint.id
   application_point_id      = one(data.apstra_datacenter_interfaces_by_link_tag.h3_link.ids)
   connectivity_template_ids = [
@@ -160,7 +160,7 @@ resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn2
     ]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn1_blue_h2" {
+resource "apstra_datacenter_connectivity_templates_assignment" "assign_ct_dc1_vn1_blue_h2" {
   blueprint_id              = apstra_datacenter_blueprint.dc1_blueprint.id
   application_point_id      = one(data.apstra_datacenter_interfaces_by_link_tag.h2_link.ids)
   connectivity_template_ids = [
@@ -168,7 +168,7 @@ resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn1
     ]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn2_blue_h4" {
+resource "apstra_datacenter_connectivity_templates_assignment" "assign_ct_dc1_vn2_blue_h4" {
   blueprint_id              = apstra_datacenter_blueprint.dc1_blueprint.id
   application_point_id      = one(data.apstra_datacenter_interfaces_by_link_tag.h4_link.ids)
   connectivity_template_ids = [
@@ -176,7 +176,7 @@ resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn2
     ]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn2_blue_h6" {
+resource "apstra_datacenter_connectivity_templates_assignment" "assign_ct_dc1_vn2_blue_h6" {
   blueprint_id              = apstra_datacenter_blueprint.dc1_blueprint.id
   application_point_id      = one(data.apstra_datacenter_interfaces_by_link_tag.h6_link.ids)
   connectivity_template_ids = [
@@ -184,7 +184,7 @@ resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn2
     ]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "assign_ct_dc1_vn2_blue_h8" {
+resource "apstra_datacenter_connectivity_templates_assignment" "assign_ct_dc1_vn2_blue_h8" {
   blueprint_id              = apstra_datacenter_blueprint.dc1_blueprint.id
   application_point_id      = one(data.apstra_datacenter_interfaces_by_link_tag.h8_link.ids)
   connectivity_template_ids = [

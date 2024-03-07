@@ -153,3 +153,20 @@ resource "apstra_logical_device" "weka_storage_2x200g" {
     }
   ]
 }
+
+resource "apstra_logical_device" "headend_device_1x100g" {
+  name = "Headend Server 1x100G"
+  panels = [
+    {
+      rows    = 1
+      columns = 1
+      port_groups = [
+        {
+          port_count = 1
+          port_speed = "100G"
+          port_roles = ["leaf", "access"]
+        },
+      ]
+    }
+  ]
+}
