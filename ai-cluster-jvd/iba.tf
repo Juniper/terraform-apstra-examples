@@ -2,7 +2,7 @@ resource "apstra_blueprint_iba_probe" "p_device_health" {
   count               = length(local.blueprints)
   blueprint_id        = local.blueprints[count.index].id
   predefined_probe_id = "device_health"
-  probe_config        = jsonencode(
+  probe_config        =   jsonencode(
     {
       "max_cpu_utilization" : 80,
       "max_memory_utilization" : 80,

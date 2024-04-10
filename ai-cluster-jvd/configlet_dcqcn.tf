@@ -159,6 +159,7 @@ EOT
       et-0/0/${local.ai_leaf_medium_400_server_dp_port_first + i} {
         congestion-notification-profile cnp;
         scheduler-map sm1;
+        
       }
     %{endfor}
       all {
