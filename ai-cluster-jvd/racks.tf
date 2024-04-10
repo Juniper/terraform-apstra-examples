@@ -32,7 +32,7 @@ resource "apstra_rack_type" "gpu_backend_sml" {
   name                       = "GPU-Backend-Sml"
   description                = "AI Rail-optimized Rack Group of up to 16 H100-based or 32 A100-based Servers. 2 spine uplinks"
   fabric_connectivity_design = "l3clos"
-  leaf_switches              = { for i in range(local.backend_rack_leaf_count) : "Leaf${i + 1}" => local.backend_rack_leaf_definition_1 }
+  leaf_switches              = { for i in range(local.backend_rack_leaf_count) : "Leaf${i + 1}" => local. backend_rack_leaf_definition_1 }
   generic_systems = {
     dgx_h100 = {
       count             = 2
