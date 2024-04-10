@@ -1,1 +1,0 @@
-output "routing_zone_id" { value = apstra_datacenter_routing_zone.a.id }

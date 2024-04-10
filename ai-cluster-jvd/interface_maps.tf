@@ -160,6 +160,7 @@ resource "apstra_interface_map" "ai_leaf_16x400_64x100" {
       {
         logical_device_port     = "1/${local.ai_leaf_16x400_64x100_spine_ld_port_first + i}"      // 1/1 through 1/16
         physical_interface_name = "et-0/0/${local.ai_leaf_16x400_64x100_spine_dp_port_first + i}" // et-0/0/0 through et-0/0/15
+        transformation_id = 1
       }
     ],
     // the server ports
@@ -167,6 +168,7 @@ resource "apstra_interface_map" "ai_leaf_16x400_64x100" {
       {
         logical_device_port     = "1/${local.ai_leaf_16x400_64x100_server_ld_port_first + i}"                          // 1/17 through 1/48
         physical_interface_name = "et-0/0/${local.ai_leaf_16x400_64x100_server_dp_port_first + floor(i / 4)}:${i % 4}" // et-0/0/16:0 through et-0/0/31:3
+        transformation_id = 2
       }
     ],
   ])
